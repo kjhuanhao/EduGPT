@@ -1,0 +1,6 @@
+.idea
+*.ipynb
+*.log
+.env
+cache
+__pycache__

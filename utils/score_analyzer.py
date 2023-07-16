@@ -1,0 +1,116 @@
+# -*- coding:utf-8 -*-
+# @FileName  : score_analyzer.py
+# @Time      : 2023/7/15
+# @Author    : LaiJiahao
+# @Desc      : None
+
+import os
+import re
+
+from loguru import logger
+from pandas import DataFrame
+from typing import Optional
+from prompt.structured_prompt import PLOT_PROMPT
+from langchain import LLMChain
+from langchain.prompts import BasePromptTemplate
+from langchain.base_language import BaseLanguageModel
+from langchain.chat_models import ChatOpenAI
+from dotenv import load_dotenv, find_dotenv
+from pandasai import PandasAI
+from pandasai.llm.openai import OpenAI
+from exceptions.plot_exception import PlotException
+from utils.cache_handler import CacheHandler
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
+
+load_dotenv(find_dotenv(), override=True)
+
+
+class ScoreAnalyzer:
+
+    def __init__(
+            self,
+            df: DataFrame,
+            llm: Optional[BaseLanguageModel] = None,
+    ) -> None:
+
+        self.df = df
+        self.schema_str = self._get_df_schema(df)
+        # self._handler = FileCallbackHandler(self._LOGFILE)
+        if llm is None:
+            llm = ChatOpenAI(model_name=os.getenv("CHAT_MODEL"),
+                             temperature=0,
+                             openai_api_key=os.getenv("OPENAI_API_KEY"),
+                             )
+        self._llm = llm
+        self._plot_chain = self._create_llm_chain(prompt=PLOT_PROMPT)
+        self._cache = CacheHandler()
+        self.pandas_llm = OpenAI()
+
+    def plot_df(
+            self,
+            desc: str
+    ) -> None:
+        """
+
+        :param desc: 对图标的指令描述
+        :return: None
+        """
+        instruction = f"The purpose of the plot: {desc}"
+
+        logger.info("正在执行Plot Chain AI")
+        response = self._plot_chain.run(
+            columns=self.schema_str,
+            example=self.df.head(1).to_string(),
+            explanation="student_transcripts",
+            instruction=instruction
+        )
+        codeblocks = self._get_code_blocks(response)
+        output = {
+            "codeblocks": codeblocks,
+            "response": response
+        }
+        self._cache.output_cache(output)
+        print(response)
+        logger.info("成功返回Plot Chain AI结果")
+        # print(response.json())
+
+    def chat_with_data(self, desc) -> str:
+        """
+        对CSV数据进行交互
+        :param desc: 询问描述
+        :return: 询问结果
+        """
+        logger.info("正在运行Pandas AI")
+        pandas_ai = PandasAI(self._llm, conversational=False)
+        response = pandas_ai.run(self.df, desc)
+
+        print(response)
+        logger.info("成功返回Pandas AI结果")
+        return response
+
+    def _create_llm_chain(self, prompt: BasePromptTemplate):
+
+        return LLMChain(llm=self._llm, prompt=prompt)
+
+    @staticmethod
+    def _get_df_schema(df: DataFrame) -> str:
+        """
+        获得dataFrame中的头部信息
+        :param df: dataframe数据
+        :return: 头部信息
+        """
+        return "\n".join([f"{name}: {dtype}" for name, dtype in df.dtypes.items()])
+
+    @staticmethod
+    def _get_code_blocks(markdown: str) -> str:
+        """
+        获得Markdown文本中的代码块部分
+        :param markdown: LLM生成的结果
+        :return: Python代码
+        """
+        pattern = r"```python(.*?)```"
+        code_blocks = re.findall(pattern, markdown, re.DOTALL)
+        if len(code_blocks) == 0:
+            raise PlotException("没有找到可执行的python代码块")
+        else:
+            return "\n".join(code_blocks)
