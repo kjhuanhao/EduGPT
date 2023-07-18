@@ -18,26 +18,23 @@ class SummaryWriter:
     """
     文本总结
     Example:
-
         summary_writer = SummaryWriter(text)
         # 生成摘要
         summary = summary_writer.write_summary()
-        # 输出摘要内容
-        print(summary)
     """
 
     def __init__(self,
-                 text: str,
+                 summary_text: str,
                  summary_count: Optional[int] = None,
                  llm: Optional[BaseLanguageModel] = None,
                  ) -> None:
         """
-        :param text:要进行摘要生成的文本
+        :param summary_text:要进行摘要生成的文本
         :param summary_count:生成摘要的条目数量（默认为 10）
         """
-        self.text = text
+        self.summary_text = summary_text
         self.seg_length = 3400
-        self.summary_count = 10 if summary_count is None else summary_count
+        self.summary_count = 5 if summary_count is None else summary_count
         self._handler = StreamingStdOutCallbackHandler()
         if llm is None:
             llm = ChatOpenAI(model_name=os.getenv("CHAT_MODEL"),
@@ -53,34 +50,42 @@ class SummaryWriter:
         拼接返回的总结文本
         :return: 总结文本
         """
-        ans = ""
-        for chunk in self._seg_content():
-            ans += self._get_summary(chunk)
+        summary_ans = ""
+        for chunk in self._summary_seg_content():
+            summary_ans += self._get_summary(chunk)
         logger.info("完成总结")
-        return ans
+        if len(self.summary_text) > self.seg_length:
+            chunk = summary_ans
+            logger.info("再次执行总结任务")
+            combined_summary_ans = self._get_summary(chunk)
+            return combined_summary_ans
+        else:
+            return summary_ans
 
-    def _seg_content(self) -> List[str]:
+    def _summary_seg_content(self) -> List[str]:
         """
         将文本按照指定的段落长度(seg_length = 3400)划分成多个段落
         :return: 划分后的段落列表
         """
-        logger.info("执行分割文本")
-        r_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=self.seg_length,
-            chunk_overlap=200
-        )
-        split_texts = r_splitter.split_text(self.text)
-        return split_texts
+        if len(self.summary_text) > self.seg_length:
+            logger.info("执行文本分割")
+            r_splitter = RecursiveCharacterTextSplitter(
+                chunk_size=self.seg_length,
+                chunk_overlap=200
+            )
+            split_texts = r_splitter.split_text(self.summary_text)
+            return split_texts
+        else:
+            return [self.summary_text]
 
     def _get_summary(self, chunk) -> str:
         logger.info("执行总结任务")
-        response = self._summary_chain.run(
+        summary_response = self._summary_chain.run(
             summary_count=self.summary_count,
             subtitle=chunk
         )
-        return response
+        return summary_response
 
     def _create_llm_chain(self, prompt: BasePromptTemplate):
 
         return LLMChain(llm=self._llm, prompt=prompt)
-
