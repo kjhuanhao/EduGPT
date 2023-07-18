@@ -1,19 +1,22 @@
 # -*- coding:utf-8 -*-
-# @FileName  : main.py
+# @FileName  : app.py
 # @Time      : 2023/7/16
 # @Author    : LaiJiahao
 # @Desc      : None
 
 from utils.score_analyzer import ScoreAnalyzer
-import pandas as pd
+from utils.question_assistant import QuestionAssistant
+from entity.subject import SubjectType
 
 
-# df = pd.read_csv("./resources/student_marks.csv")
-# a = ScoreAnalyzer(df)
-# a.plot_df("展示所有Test的最高分和最低分")
-# a.plot_df("展示所有Test的最高分和最低分")
-# text = "\nimport plotly.express as px\n\n# Create a histogram plot for Test_1 scores\nfig = px.histogram(df, x='Test_1')\n\n# Set the title and axis labels\nfig.update_layout(\n    title_text='Distribution of Test_1 Scores',\n    xaxis_title='Test_1 Score',\n    yaxis_title='Count'\n)\n\n# Display the plot\nfig.show()\n"
-# exec(text)
+def test_analyzer():
+    a = ScoreAnalyzer("./resources/student_marks.csv")
+    a.plot_df("展示所有Test的最高分和最低分")
+    # a.chat_with_data("Test1到Test12中，所有学生的总成绩最高的学生ID")
+
+
+#test_analyzer()
+
 
 def test_summary():
     from utils.bili_subtitle_downloader import BiliSubtitleDownloader
@@ -31,4 +34,16 @@ def test_summary():
     # 输出摘要内容
     print(summary)
 
-test_summary()
+
+def test_question_assistant():
+    question_assistant = QuestionAssistant()
+    question_assistant.generate_choice_question(desc="关于中国古代农业生产力", subject=SubjectType.History)
+    # question_assistant.generate_short_answer_question(desc="关于中国古代农业生产力", subject=SubjectType.History)
+
+
+#test_question_assistant()
+
+def test_init():
+    from service.initialize import initialize_state
+    initialize_state()
+test_init()
