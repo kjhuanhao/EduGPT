@@ -8,33 +8,76 @@ import os
 import json
 
 from loguru import logger
-from typing import Dict
+from typing import Dict, Union
+from entity.question_result import ChoiceQuestionResult, ShortAnswerQuestionResult
+from entity.subject import SubjectType
 
 
 class CacheHandler:
-    _OUTPUT_FILE = "/cache/output.json"
+    _OUTPUT_fOLDER = "./cache/"
+    _ANALYZER_FILE = "analyzer.json"
+    _QUESTION_FILE = "question.json"
+    _ANALYZER_PATH = _OUTPUT_fOLDER + _ANALYZER_FILE
+    _QUESTION_PATH = _OUTPUT_fOLDER + _QUESTION_FILE
 
     def __init__(self):
-        pass
-
-    def output_cache(self, response: Dict) -> None:
         """
-        将输出后的内容进行本地缓存
-        :param response: 响应的结果，需要提前封装为dict
-        :return: None
+        初始化缓存处理，从本地读取缓存
         """
-        logger.info("正在缓存输出信息")
-        if not os.path.exists("/cache"):
-            os.mkdir("cache")
+        if not os.path.exists(self._OUTPUT_fOLDER):
+            os.makedirs(self._OUTPUT_fOLDER)
+        self.subject_types = [value.name for value in list(SubjectType)]
 
-        if os.path.isfile(self._OUTPUT_FILE):
-            with open(self._OUTPUT_FILE, 'r') as f:
+    def analyzer_cache(self, cache_message: Dict) -> None:
+        if os.path.isfile(self._ANALYZER_PATH):
+            with open(self._ANALYZER_PATH, 'r', encoding='utf-8') as f:
                 existing_data = json.load(f)
         else:
             existing_data = []
-        existing_data.append(response)
+        existing_data.append(cache_message)
 
-        with open(self._OUTPUT_FILE, 'w') as f:
+        with open(self._ANALYZER_PATH, 'w', encoding='utf-8') as f:
             json.dump(existing_data, f)
 
         logger.info("缓存结束")
+
+    def question_cache(
+            self,
+            subject_type: str,
+            question_result: Union[ChoiceQuestionResult, ShortAnswerQuestionResult]
+    ) -> None:
+        """
+        将题目进行缓存
+        :return: None
+        """
+        if not SubjectType.validate_subject_type(subject_type):
+            return
+        logger.info("读取本地题库缓存")
+
+        existing_data = self.get_question_cache()
+
+        logger.info("开始缓存题目")
+
+        if isinstance(question_result, ChoiceQuestionResult):
+            result = question_result.get_choice_question()
+        else:
+            result = question_result.get_short_answer_question()
+
+        existing_data[subject_type].append(result)
+
+        with open(self._QUESTION_PATH, 'w', encoding='utf-8') as f:
+            json.dump(existing_data, f)
+        logger.info("题目缓存结束")
+
+    def get_question_cache(self) -> Dict:
+        """
+        获取缓存的题目
+        :return: 题目
+        """
+        if os.path.isfile(self._QUESTION_PATH):
+            with open(self._QUESTION_PATH, 'r', encoding='utf-8') as f:
+                existing_data = json.load(f)  # 将json文件转换为字典
+        else:
+            existing_data = {item: [] for item in self.subject_types}
+
+        return existing_data

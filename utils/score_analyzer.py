@@ -6,10 +6,11 @@
 
 import os
 import re
+import pandas as pd
 
 from loguru import logger
 from pandas import DataFrame
-from typing import Optional
+from typing import Optional, Dict
 from prompt.structured_prompt import PLOT_PROMPT
 from langchain import LLMChain
 from langchain.prompts import BasePromptTemplate
@@ -26,15 +27,26 @@ load_dotenv(find_dotenv(), override=True)
 
 
 class ScoreAnalyzer:
+    """
+    分数分析器
+    Example:
+        score_analyzer = ScoreAnalyzer(df)
+        # 生成图表
+        score_analyzer.plot_df("your_desc")
+        # 与数据交互
+        score_analyzer.chat_with_data("your_desc")
+    """
 
     def __init__(
             self,
-            df: DataFrame,
+            file_path: str,
             llm: Optional[BaseLanguageModel] = None,
     ) -> None:
-
-        self.df = df
-        self.schema_str = self._get_df_schema(df)
+        if not os.path.exists(file_path):
+            raise Exception("该文件不存在")
+        self.file_path = file_path
+        self.df = pd.read_csv(file_path)
+        self._schema_str = self._get_df_schema(self.df)
         # self._handler = FileCallbackHandler(self._LOGFILE)
         if llm is None:
             llm = ChatOpenAI(model_name=os.getenv("CHAT_MODEL"),
@@ -43,15 +55,14 @@ class ScoreAnalyzer:
                              )
         self._llm = llm
         self._plot_chain = self._create_llm_chain(prompt=PLOT_PROMPT)
-        self._cache = CacheHandler()
-        self.pandas_llm = OpenAI()
+        self._pandas_llm = OpenAI()
 
     def plot_df(
             self,
             desc: str
-    ) -> None:
+    ) -> Dict:
         """
-
+        生成图表
         :param desc: 对图标的指令描述
         :return: None
         """
@@ -59,20 +70,22 @@ class ScoreAnalyzer:
 
         logger.info("正在执行Plot Chain AI")
         response = self._plot_chain.run(
-            columns=self.schema_str,
+            columns=self._schema_str,
             example=self.df.head(1).to_string(),
-            explanation="student_transcripts",
+            file_path=self.file_path,
             instruction=instruction
         )
         codeblocks = self._get_code_blocks(response)
-        output = {
+        result = {
             "codeblocks": codeblocks,
             "response": response
         }
-        self._cache.output_cache(output)
-        print(response)
+        # self._cache.output_cache(output)
+        # print(response)
+
         logger.info("成功返回Plot Chain AI结果")
-        # print(response.json())
+
+        return result
 
     def chat_with_data(self, desc) -> str:
         """
@@ -81,7 +94,7 @@ class ScoreAnalyzer:
         :return: 询问结果
         """
         logger.info("正在运行Pandas AI")
-        pandas_ai = PandasAI(self._llm, conversational=False)
+        pandas_ai = PandasAI(self._pandas_llm, conversational=False)
         response = pandas_ai.run(self.df, desc)
 
         print(response)
@@ -89,7 +102,6 @@ class ScoreAnalyzer:
         return response
 
     def _create_llm_chain(self, prompt: BasePromptTemplate):
-
         return LLMChain(llm=self._llm, prompt=prompt)
 
     @staticmethod
