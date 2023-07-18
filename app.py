@@ -133,7 +133,6 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
                 # 监听label是否改变
                 show_question.change(fn=lambda: gr.update(value=None), outputs=show_text)
 
-
     """
     【学生】题目生成
     """
