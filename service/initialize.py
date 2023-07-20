@@ -6,6 +6,7 @@
 
 from typing import Dict
 from utils.cache_handler import CacheHandler
+from entity.toolkit import Toolkit
 
 
 def initialize_state() -> Dict:
@@ -13,12 +14,12 @@ def initialize_state() -> Dict:
     初始化app的state状态，这里放入组件需要的预加载的数据
     已存入的数据:
         1. 所有的科目类型
-
+        2. 所有的插件
     """
     state = {}
     cache_handler = CacheHandler()
     # question_cache = cache_handler.get_question_cache()
     # state["question_cache"] = question_cache
     state["subject_types"] = cache_handler.subject_types
+    state["plugins"] = [value.value for value in list(Toolkit)]
     return state
-

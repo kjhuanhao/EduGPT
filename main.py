@@ -15,7 +15,7 @@ def test_analyzer():
     # a.chat_with_data("Test1到Test12中，所有学生的总成绩最高的学生ID")
 
 
-#test_analyzer()
+# test_analyzer()
 
 
 def test_summary():
@@ -41,9 +41,17 @@ def test_question_assistant():
     # question_assistant.generate_short_answer_question(desc="关于中国古代农业生产力", subject=SubjectType.History)
 
 
-#test_question_assistant()
+# test_question_assistant()
 
 def test_init():
     from service.initialize import initialize_state
     initialize_state()
-test_init()
+
+
+def test_plugins():
+    from utils.plugins import Plugins
+    plugins = Plugins("中国古代史")
+    print(plugins.recommend_course())
+
+
+test_plugins()

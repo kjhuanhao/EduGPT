@@ -10,6 +10,7 @@ from service.score_analyzer_service import update_result, execute_score_analyzer
 from service.generate_question_service import generate_question
 from service.initialize import initialize_state
 from service.brush_questions import update_question_info
+from service.plugins_service import input_tip, output_chatbot
 
 
 def get_state_data(state, key):
@@ -20,6 +21,11 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
     global_state = initialize_state()
     local_state = gr.State({})
     subject_types = global_state["subject_types"]
+    plugins = global_state["plugins"]
+
+    gr.Markdown("# Welcome to EduGPT! 🌟🚀")
+    gr.Markdown("为教育降本增效的AI应用")
+
     """
     【教师】智能成绩分析师
     """
@@ -134,7 +140,7 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
                 show_question.change(fn=lambda: gr.update(value=None), outputs=show_text)
 
     """
-    【学生】题目生成
+    题目生成
     """
     with gr.Tab("【学生】题目生成"):
         gr.Markdown("# 智能题目生成助手")
@@ -170,6 +176,27 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
                     remove_button = gr.ClearButton(value="移除题目", variant="stop")
                     generate_button.click(fn=generate_question, inputs=[question_type, desc_input, subject_type],
                                           outputs=show_result)
+
+    """
+    插件
+    """
+    with gr.Tab("智能AI插件"):
+        gr.Markdown("# 智能AI插件")
+        chatbot = gr.Chatbot()
+        with gr.Row():
+            plugins_select = gr.Dropdown(choices=plugins, interactive=True, label="插件选择", show_label=True)
+            tip = gr.Label(label="输入提示", value="请选择一个插件", show_label=True)
+            plugins_select.change(fn=input_tip, inputs=plugins_select, outputs=tip)
+        input_instruction = gr.Textbox(label="输入指令", show_label=True, placeholder="请根据提示输入指令", lines=9)
+        with gr.Row():
+            run_button = gr.Button(value="Run")
+            run_button.click(fn=output_chatbot, inputs=[plugins_select, input_instruction, chatbot], outputs=[input_instruction, chatbot])
+            clear_button = gr.ClearButton([input_instruction, chatbot])
+    with gr.Tab("设置"):
+        gr.Markdown("# 在使用本项目之前，你需要做一些简单的设置")
+        input_api_key = gr.Textbox(label="输入你的API Key", show_label=True, placeholder="输入你的API Key")
+        select_model = gr.Dropdown(choices=["gpt-3.5-turbo", "gpt-3.5-turbo-16k", "gpt-4", "gpt-4-32k"], interactive=True, label="选择openAI模型", show_label=True)
+        save_button = gr.Button(value="保存设置")
 
 if __name__ == "__main__":
     demo.launch()

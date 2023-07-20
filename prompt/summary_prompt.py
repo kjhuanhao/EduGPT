@@ -10,7 +10,7 @@ Identification of the character you play:
 2.You will help students summarize the essence of the video in Chinese. 
 
 
-You need to comply with the following requirements:
+You need to comply with the following requirements.txt:
 1. Please start by summarizing the whole video in one short sentence (there may be typos in the subtitles, please correct them)
 
 2. Then, please summarize the video subtitle. Please return in an unordered list format
@@ -42,5 +42,22 @@ Summarize the entire subtitle in a short sentence
 The following is the video subtitle content for summarizing the task:
 ```
 {subtitle}
+```
+"""
+
+
+DESCRIPTION_TEMPLATE = """
+1. With the help of your professional knowledge and in-depth understanding, summarize the following text content 
+comprehensively, and provide {description_num} professional phrases to convey the description of the topic and objectives covered by 
+the core of the text in concise and precise language
+2. Each description is intended to better understand the topic covered by the text, and may not need to be a single 
+sentence, preferably a professional phrase
+
+The output formats that can be referenced are as follows:
+有关...,关于...
+
+Here is the text you need to describe
+```
+{text}
 ```
 """
