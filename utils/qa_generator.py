@@ -5,19 +5,14 @@
 # @Desc      : 文本 Q&A
 
 import os
-
-from dotenv import load_dotenv, find_dotenv
+from common.config import Config
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
 import pinecone
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.chat_models import ChatOpenAI
 from langchain.chains import RetrievalQA
-from langchain.base_language import BaseLanguageModel
-from typing import List, Optional
+from typing import List
 from loguru import logger
-
-load_dotenv(find_dotenv(), override=True)
 
 pinecone.init(
     api_key=os.getenv("PINECONE_API_KEY"),  # find at app.pinecone.io
@@ -32,11 +27,10 @@ class QAGenerator:
         qa_generator = QAGenerator(subtitle, query=)
         result = qa_generator.qa_generator()
     """
+
     def __init__(self,
                  qa_text: str,
                  query: str,
-                 llm: Optional[BaseLanguageModel] = None,
-
                  ) -> None:
         """
         :param qa_text: 要进行Q&A的文本
@@ -46,11 +40,7 @@ class QAGenerator:
         self.qa_text = qa_text
         self.seg_length = 3400
         self.query = query
-        if llm is None:
-            llm = ChatOpenAI(model_name=os.getenv("CHAT_MODEL"),
-                             temperature=0,
-                             )
-        self._llm = llm
+        self._llm = Config.stochastic_llm
 
     def _text_splitter(self) -> List[str]:
         logger.info("执行文本分割")
@@ -69,5 +59,3 @@ class QAGenerator:
         qa = RetrievalQA.from_chain_type(llm=self._llm, chain_type="stuff", retriever=textsearch.as_retriever())
         result = qa.run(self.query)
         return result
-
-

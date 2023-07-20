@@ -5,14 +5,18 @@
 # @Desc      : 结构化prompt
 
 from langchain.prompts.prompt import PromptTemplate
-
-
 from prompt.analyzer_prompt import PLOT_PROMPT_TEMPLATE
 from prompt.summary_prompt import SUMMARY_TEMPLATE, DESCRIPTION_TEMPLATE
 from prompt.question_prompt import (
     QUESTION_CHOICE_TEMPLATE,
     QUESTION_SHORT_ANSWER_TEMPLATE,
     VERIFY_ANSWER_TEMPLATE
+)
+from prompt.plugins_prompt import (
+    STUDY_PLAN_TEMPLATE,
+    CHINESE_ESSAY_SCORING_TEMPLATE,
+    VIDEO_RECOMMENDATION_TEMPLATE,
+    INSPIRATION_TEMPLATE
 )
 
 # 绘制的prompt
@@ -35,7 +39,6 @@ QUESTION_CHOICE_PROMPT = PromptTemplate(
     input_variables=["instruction", "subject"], template=QUESTION_CHOICE_TEMPLATE
 )
 
-
 # 简答题的prompt
 QUESTION_SHORT_ANSWER_PROMPT = PromptTemplate(
     input_variables=["instruction", "subject"], template=QUESTION_SHORT_ANSWER_TEMPLATE
@@ -44,4 +47,23 @@ QUESTION_SHORT_ANSWER_PROMPT = PromptTemplate(
 # 验证简答题的prompt
 VERIFY_ANSWER_PROMPT = PromptTemplate(
     input_variables=["question", "answer"], template=VERIFY_ANSWER_TEMPLATE
+)
+
+# 制定学习计划的prompt
+STUDY_PLAN_PROMPT = PromptTemplate(
+    input_variables=["instruction"], template=STUDY_PLAN_TEMPLATE
+)
+
+# 作文评分的prompt
+CHINESE_ESSAY_SCORING_PROMPT = PromptTemplate(
+    input_variables=["instruction"], template=CHINESE_ESSAY_SCORING_TEMPLATE
+)
+
+# 视频推荐的prompt
+VIDEO_RECOMMENDATION_PROMPT = PromptTemplate(
+    input_variables=["instruction", "video_info"], template=VIDEO_RECOMMENDATION_TEMPLATE
+)
+
+INSPIRATION_PROMPT = PromptTemplate(
+    input_variables=["instruction"], template=INSPIRATION_TEMPLATE
 )

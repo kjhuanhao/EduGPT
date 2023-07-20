@@ -8,6 +8,7 @@ import os
 import re
 import pandas as pd
 
+from common.config import Config
 from loguru import logger
 from pandas import DataFrame
 from typing import Optional, Dict
@@ -16,14 +17,9 @@ from langchain import LLMChain
 from langchain.prompts import BasePromptTemplate
 from langchain.base_language import BaseLanguageModel
 from langchain.chat_models import ChatOpenAI
-from dotenv import load_dotenv, find_dotenv
 from pandasai import PandasAI
 from pandasai.llm.openai import OpenAI
 from exceptions.plot_exception import PlotException
-from utils.cache_handler import CacheHandler
-from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
-
-load_dotenv(find_dotenv(), override=True)
 
 
 class ScoreAnalyzer:
@@ -39,8 +35,7 @@ class ScoreAnalyzer:
 
     def __init__(
             self,
-            file_path: str,
-            llm: Optional[BaseLanguageModel] = None,
+            file_path: str
     ) -> None:
         if not os.path.exists(file_path):
             raise Exception("该文件不存在")
@@ -48,13 +43,8 @@ class ScoreAnalyzer:
         self.df = pd.read_csv(file_path)
         self._schema_str = self._get_df_schema(self.df)
         # self._handler = FileCallbackHandler(self._LOGFILE)
-        if llm is None:
-            llm = ChatOpenAI(model_name=os.getenv("CHAT_MODEL"),
-                             temperature=0,
-                             openai_api_key=os.getenv("OPENAI_API_KEY"),
-                             )
-        self._llm = llm
-        self._plot_chain = self._create_llm_chain(prompt=PLOT_PROMPT)
+        self._llm = Config.stochastic_llm
+        self._plot_chain = Config.create_llm_chain(self._llm, PLOT_PROMPT)
         self._pandas_llm = OpenAI()
 
     def plot_df(
@@ -101,8 +91,6 @@ class ScoreAnalyzer:
         logger.info("成功返回Pandas AI结果")
         return response
 
-    def _create_llm_chain(self, prompt: BasePromptTemplate):
-        return LLMChain(llm=self._llm, prompt=prompt)
 
     @staticmethod
     def _get_df_schema(df: DataFrame) -> str:

@@ -8,7 +8,7 @@ import os
 import json
 
 from loguru import logger
-from typing import Dict, Union
+from typing import Dict, Union, List
 from entity.question_result import ChoiceQuestionResult, ShortAnswerQuestionResult
 from entity.subject import SubjectType
 
@@ -102,7 +102,7 @@ class CacheHandler:
             json.dump(existing_data, f)
         logger.info("题目缓存结束")
 
-    def get_subtitle_cache(self) -> Dict:
+    def get_subtitle_cache(self) -> List:
         """
         获取缓存的标题、字幕、字幕总结
         :return: 标题、字幕、字幕总结
