@@ -3,41 +3,29 @@
 # @Time      : 2023/7/18
 # @Author    : LinZiHao
 # @Desc      : 生成题目
-import os
 
 from utils.question_assistant import QuestionAssistant
 from utils.cache_handler import CacheHandler
 from typing import Optional, Union
 from prompt.structured_prompt import DESCRIPTION_PROMPT
 from entity.question_result import ChoiceQuestionResult, ShortAnswerQuestionResult
-
-from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
-from langchain.chat_models import ChatOpenAI
+from common.config import Config
 from langchain.chains import LLMChain
-from langchain.base_language import BaseLanguageModel
 from langchain.prompts import BasePromptTemplate
 
 
 class DescriptionGenerator:
-    def __init__(self,
-                 title: str,
-                 llm: Optional[BaseLanguageModel] = None,
-                 ):
+    def __init__(self, title: str, ):
         self.target_title = title
-        self._handler = StreamingStdOutCallbackHandler()
-        if llm is None:
-            llm = ChatOpenAI(model_name=os.getenv("CHAT_MODEL"),
-                             temperature=0,
-                             callbacks=[self._handler],
-                             streaming=True
-                             )
-        self._llm = llm
-        self._description_chain = self._create_llm_chain(llm=self._llm, prompt=DESCRIPTION_PROMPT)
+        self._llm = Config.stochastic_llm
+        self._description_chain = Config.create_llm_chain(self._llm, DESCRIPTION_PROMPT)
         self._cache_handler = CacheHandler()
 
-    def generate_question_from_video(self,
-                                     subject_type: str,
-                                     question_type: Union[ChoiceQuestionResult, ShortAnswerQuestionResult], ):
+    def generate_question_from_video(
+            self,
+            subject_type: str,
+            question_type: Union[ChoiceQuestionResult, ShortAnswerQuestionResult]
+    ):
         if isinstance(question_type, ChoiceQuestionResult):
             question = QuestionAssistant().generate_choice_question(self.generate_description(),
                                                                     subject_type)
