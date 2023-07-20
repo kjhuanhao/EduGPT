@@ -17,8 +17,10 @@ class CacheHandler:
     _OUTPUT_fOLDER = "./cache/"
     _ANALYZER_FILE = "analyzer.json"
     _QUESTION_FILE = "question.json"
+    _SUBTITLE_FILE = "subtitle.json"
     _ANALYZER_PATH = _OUTPUT_fOLDER + _ANALYZER_FILE
     _QUESTION_PATH = _OUTPUT_fOLDER + _QUESTION_FILE
+    _SUBTITLE_PATH = _OUTPUT_fOLDER + _SUBTITLE_FILE
 
     def __init__(self):
         """
@@ -81,3 +83,41 @@ class CacheHandler:
             existing_data = {item: [] for item in self.subject_types}
 
         return existing_data
+
+    def subtitle_cache(self, title: str, subtitle: str, summary: str) -> None:
+        """
+        将标题、字幕、字幕总结进行缓存
+        :return: None
+        """
+        logger.info("读取本地字幕缓存")
+
+        existing_data = self.get_subtitle_cache()
+
+        logger.info("开始缓存字幕")
+
+        result = {"title": title, "subtitle": subtitle, "summary": summary}
+        existing_data.append(result)
+
+        with open(self._SUBTITLE_PATH, 'w', encoding='utf-8') as f:
+            json.dump(existing_data, f)
+        logger.info("题目缓存结束")
+
+    def get_subtitle_cache(self) -> Dict:
+        """
+        获取缓存的标题、字幕、字幕总结
+        :return: 标题、字幕、字幕总结
+        """
+        if os.path.isfile(self._SUBTITLE_PATH):
+            with open(self._SUBTITLE_PATH, 'r', encoding='utf-8') as f:
+                existing_data = json.load(f)  # 将json文件转换为列表
+        else:
+            existing_data = []
+
+        return existing_data
+
+
+
+
+
+
+

@@ -6,7 +6,7 @@
 
 from langchain.prompts.prompt import PromptTemplate
 from prompt.analyzer_prompt import PLOT_PROMPT_TEMPLATE
-from prompt.summary_prompt import SUMMARY_TEMPLATE
+from prompt.summary_prompt import SUMMARY_TEMPLATE, DESCRIPTION_TEMPLATE
 from prompt.question_prompt import (
     QUESTION_CHOICE_TEMPLATE,
     QUESTION_SHORT_ANSWER_TEMPLATE,
@@ -27,6 +27,11 @@ PLOT_PROMPT = PromptTemplate(
 # 总结字幕的prompt
 SUMMARY_PROMPT = PromptTemplate(
     input_variables=["summary_count", "subtitle"], template=SUMMARY_TEMPLATE
+)
+
+# 总结描述主题的prompt
+DESCRIPTION_PROMPT = PromptTemplate(
+    input_variables=["description_num", "text"], template=DESCRIPTION_TEMPLATE
 )
 
 # 单选题的prompt
