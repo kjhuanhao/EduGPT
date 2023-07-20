@@ -3,8 +3,8 @@ import os
 from typing import List
 from dotenv import load_dotenv, find_dotenv
 from exceptions.subtitle_download_exception import SubTitleDownloadException
+from bilibili_api import sync, video
 from loguru import logger
-
 
 load_dotenv(find_dotenv(), override=True)
 
@@ -34,20 +34,38 @@ class BiliSubtitleDownloader:
 
     def __init__(self,
                  bv_id: str,
-                 p_num: int
+                 p_num: int,
+                 cookie: str
                  ) -> None:
         """
         :param bv_id:视频的 BV 号
         :param p_num:分集号
+        :param cookie: cookie
         """
         self.bv_id = bv_id
         self.p_num = p_num
+        self.cookie = cookie
         cookie = os.getenv("BILIBILI_COOKIE")
         if cookie is None:
             logger.warning("cookie是空的")
             return
 
-    def download_subtitle(self) -> str:
+    def get_bili_info(self) -> dict:
+        return {"title": self._download_title(),
+                "subtitle": self._download_subtitle()}
+
+    def _download_title(self) -> str:
+        """
+        下载标题
+        :return:标题
+        """
+        v = video.Video(f'{self.bv_id}')
+        info = sync(v.get_info())
+        title = info['title']
+        logger.info("成功获取标题")
+        return title
+
+    def _download_subtitle(self) -> str:
         """
         下载字幕
         :return: 字幕
@@ -98,7 +116,7 @@ class BiliSubtitleDownloader:
             cookie = input("请输入cookie：")
             with open("./cookie", "w") as f:
                 f.write(cookie)
-            self._HERDERS["Cookie"] = cookie
+            self._HERDERS["Cookie"] = self.cookie
             subtitles = self._get_subtitle_list(cid)
             if subtitles:
                 return self._request_subtitle(subtitles[0])

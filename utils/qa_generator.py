@@ -1,14 +1,14 @@
-# -*- coding: utf-8 -*-
-# @Author    :   LinZiHao
-# @Time      :   2023/7/17 1:47
-# @File      :   qa_generator.py
-# @Project   :   EduGPT
+# -*- coding:utf-8 -*-
+# @File      : qa_generator.py
+# @Time      : 2023/7/17
+# @Author    : LinZiHao
+# @Desc      : 文本 Q&A
+
 import os
 
-from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from dotenv import load_dotenv, find_dotenv
 from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.vectorstores import Pinecone
+from langchain.vectorstores import FAISS
 import pinecone
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.chat_models import ChatOpenAI
@@ -45,13 +45,10 @@ class QAGenerator:
         """
         self.qa_text = qa_text
         self.seg_length = 3400
-        self._handler = StreamingStdOutCallbackHandler()
         self.query = query
         if llm is None:
             llm = ChatOpenAI(model_name=os.getenv("CHAT_MODEL"),
                              temperature=0,
-                             callbacks=[self._handler],
-                             streaming=True
                              )
         self._llm = llm
 
@@ -68,10 +65,9 @@ class QAGenerator:
         # 创建embeddings
         embeddings = OpenAIEmbeddings()
         # 创建向量存储，使得我们可以进行相关性搜索
-        index_name = "edupt"
-        textsearch = Pinecone.from_texts(self._text_splitter(), embeddings, index_name=index_name)
+        textsearch = FAISS.from_texts(self._text_splitter(), embeddings)
         qa = RetrievalQA.from_chain_type(llm=self._llm, chain_type="stuff", retriever=textsearch.as_retriever())
-        result = qa({"question": self.query})
+        result = qa.run(self.query)
         return result
 
 
