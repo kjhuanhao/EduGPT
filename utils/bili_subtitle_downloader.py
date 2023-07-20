@@ -31,7 +31,7 @@ class BiliSubtitleDownloader:
     }
     _PAGE_LIST_URL = 'https://api.bilibili.com/x/player/pagelist'
     _SUBTITLE_URL = f'https://api.bilibili.com/x/player/v2'
-
+    # TODO cookie有问题
     def __init__(self,
                  bv_id: str,
                  p_num: int,

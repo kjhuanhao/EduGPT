@@ -4,14 +4,9 @@
 # @Author    : LaiJiahao
 # @Desc      : 设置题目
 
-import os
 
 from loguru import logger
-from typing import Optional, Dict
-from langchain.base_language import BaseLanguageModel
-from langchain.chat_models import ChatOpenAI
-from langchain.prompts import BasePromptTemplate
-from langchain.chains import LLMChain
+from common.config import Config
 from prompt.structured_prompt import (
     QUESTION_CHOICE_PROMPT,
     QUESTION_SHORT_ANSWER_PROMPT,
@@ -25,17 +20,12 @@ from utils.cache_handler import CacheHandler
 class QuestionAssistant:
 
     def __init__(
-            self,
-            llm: Optional[BaseLanguageModel] = None,
+            self
     ) -> None:
-        if llm is None:
-            llm = ChatOpenAI(model_name=os.getenv("CHAT_MODEL"),
-                             temperature=0.5,
-                             )
-        self._llm = llm
-        self._set_choice_question_chain = self._create_llm_chain(prompt=QUESTION_CHOICE_PROMPT)
-        self._set_short_answer_question_chain = self._create_llm_chain(prompt=QUESTION_SHORT_ANSWER_PROMPT)
-        self._verify_answer_chain = self._create_llm_chain(prompt=VERIFY_ANSWER_PROMPT)
+        self._llm = Config.stochastic_llm
+        self._set_choice_question_chain = Config.create_llm_chain(llm=self._llm, prompt=QUESTION_CHOICE_PROMPT)
+        self._set_short_answer_question_chain = Config.create_llm_chain(llm=self._llm, prompt=QUESTION_SHORT_ANSWER_PROMPT)
+        self._verify_answer_chain = Config.create_llm_chain(llm=self._llm, prompt=VERIFY_ANSWER_PROMPT)
         self._cache_handler = CacheHandler()
 
     def generate_choice_question(self, desc: str, subject_type: str) -> ChoiceQuestionResult:
@@ -88,5 +78,3 @@ class QuestionAssistant:
             answer=answer
         )
 
-    def _create_llm_chain(self, prompt: BasePromptTemplate):
-        return LLMChain(llm=self._llm, prompt=prompt)

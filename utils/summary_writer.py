@@ -1,17 +1,14 @@
-import os
-
-from dotenv import load_dotenv, find_dotenv
+# -*- coding:utf-8 -*-
+# @FileName  : summary_writer.py
+# @Time      : 2023/7/17
+# @Author    : LinZihao
+# @Desc      : 总结文本
+from common.config import Config
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from typing import List, Optional
 from prompt.structured_prompt import SUMMARY_PROMPT
 from utils.cache_handler import CacheHandler
-from langchain.chat_models import ChatOpenAI
-from langchain.chains import LLMChain
-from langchain.base_language import BaseLanguageModel
-from langchain.prompts import BasePromptTemplate
 from loguru import logger
-
-load_dotenv(find_dotenv(), override=True)
 
 
 class SummaryWriter:
@@ -25,8 +22,7 @@ class SummaryWriter:
 
     def __init__(self,
                  summary_info: dict,
-                 summary_count: Optional[int] = None,
-                 llm: Optional[BaseLanguageModel] = None,
+                 summary_count: Optional[int] = None
                  ) -> None:
         """
         :param summary_info:要进行摘要生成的文本
@@ -36,12 +32,8 @@ class SummaryWriter:
         self.subtitle = summary_info["subtitle"]
         self.seg_length = 3400
         self.summary_count = 5 if summary_count is None else summary_count
-        if llm is None:
-            llm = ChatOpenAI(model_name=os.getenv("CHAT_MODEL"),
-                             temperature=0
-                             )
-        self._llm = llm
-        self._summary_chain = self._create_llm_chain(llm=self._llm, prompt=SUMMARY_PROMPT)
+        self._llm = Config.deterministic_llm
+        self._summary_chain = Config.create_llm_chain(llm=self._llm, prompt=SUMMARY_PROMPT)
         self._cache_handler = CacheHandler()
 
     def write_summary(self) -> str:
@@ -55,22 +47,10 @@ class SummaryWriter:
             summary_ans += self._get_summary(chunk)
         if len(pre_summary_text) >= 2:
             summary_ans = self._get_summary(summary_ans)
+
         self._cache_handler.subtitle_cache(title=self.title,
                                            subtitle=self.subtitle,
                                            summary=summary_ans)
-
-        # if len(self.subtitle) > self.seg_length:
-        #     for chunk in self._summary_seg_content():
-        #         summary_ans += self._get_summary(chunk)
-        #     logger.info("完成初次总结")
-        #     chunk = summary_ans
-        #     logger.info("再次执行总结任务")
-        #     combined_summary_ans = self._get_summary(chunk)
-        #     return combined_summary_ans
-        # else:
-        #     for chunk in self._summary_seg_content():
-        #         summary_ans = self._get_summary(chunk)
-        #     logger.info("完成总结")
 
         return summary_ans
 
@@ -98,7 +78,3 @@ class SummaryWriter:
         )
         return summary_response
 
-    @staticmethod
-    def _create_llm_chain(llm, prompt: BasePromptTemplate):
-
-        return LLMChain(llm=llm, prompt=prompt)
