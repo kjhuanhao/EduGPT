@@ -4,20 +4,13 @@
 # @Author    : LinZiHao
 # @Desc      : 文本 Q&A
 
-import os
 from common.config import Config
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
-import pinecone
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.chains import RetrievalQA
+from langchain.text_splitter import CharacterTextSplitter
+from prompt.structured_prompt import QA_PROMPT
 from typing import List
 from loguru import logger
-
-pinecone.init(
-    api_key=os.getenv("PINECONE_API_KEY"),  # find at app.pinecone.io
-    environment=os.getenv("PINECONE_ENV"),  # next to api key in console
-)
 
 
 class QAGenerator:
@@ -35,17 +28,17 @@ class QAGenerator:
         """
         :param qa_text: 要进行Q&A的文本
         :param query: 提问词
-        :param llm: 自定义llm，默认gpt-3.5-turbo
         """
         self.qa_text = qa_text
         self.seg_length = 3400
         self.query = query
-        self._llm = Config.stochastic_llm
+        self._llm = Config.long_llm
+        self._chain = Config.create_llm_chain(self._llm, QA_PROMPT)
 
     def _text_splitter(self) -> List[str]:
         logger.info("执行文本分割")
         # 创建拆分器
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=self.seg_length, chunk_overlap=200)
+        text_splitter = CharacterTextSplitter(chunk_size=self.seg_length, chunk_overlap=200)
         # 拆分文本
         qa_split_text = text_splitter.split_text(self.qa_text)
         return qa_split_text
@@ -56,6 +49,14 @@ class QAGenerator:
         embeddings = OpenAIEmbeddings()
         # 创建向量存储，使得我们可以进行相关性搜索
         textsearch = FAISS.from_texts(self._text_splitter(), embeddings)
-        qa = RetrievalQA.from_chain_type(llm=self._llm, chain_type="stuff", retriever=textsearch.as_retriever())
-        result = qa.run(self.query)
+        similarity_texts_lists = textsearch.similarity_search(self.query, k=4)
+        similarity_texts = ""
+
+        for text in similarity_texts_lists:
+            similarity_texts += f"{text.page_content} \n"
+        print(similarity_texts)
+        result = self._chain.run(
+            text=similarity_texts,
+            query=self.query
+        )
         return result

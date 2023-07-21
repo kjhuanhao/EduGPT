@@ -6,7 +6,7 @@
 
 from langchain.prompts.prompt import PromptTemplate
 from prompt.analyzer_prompt import PLOT_PROMPT_TEMPLATE
-from prompt.summary_prompt import SUMMARY_TEMPLATE, DESCRIPTION_TEMPLATE
+from prompt.summary_prompt import SUMMARY_TEMPLATE, DESCRIPTION_TEMPLATE, QA_TEMPLATE
 from prompt.question_prompt import (
     QUESTION_CHOICE_TEMPLATE,
     QUESTION_SHORT_ANSWER_TEMPLATE,
@@ -66,4 +66,8 @@ VIDEO_RECOMMENDATION_PROMPT = PromptTemplate(
 
 INSPIRATION_PROMPT = PromptTemplate(
     input_variables=["instruction"], template=INSPIRATION_TEMPLATE
+)
+
+QA_PROMPT = PromptTemplate(
+    input_variables=["text", "query"], template=QA_TEMPLATE
 )

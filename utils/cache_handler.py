@@ -14,7 +14,7 @@ from entity.subject import SubjectType
 
 
 class CacheHandler:
-    _OUTPUT_fOLDER = "./cache/"
+    _OUTPUT_fOLDER = "cache/"
     _ANALYZER_FILE = "analyzer.json"
     _QUESTION_FILE = "question.json"
     _SUBTITLE_FILE = "subtitle.json"
@@ -84,7 +84,7 @@ class CacheHandler:
 
         return existing_data
 
-    def subtitle_cache(self, title: str, subtitle: str, summary: str) -> None:
+    def subtitle_cache(self, b_cid: str, title: str, subtitle: str, summary: str) -> Dict:
         """
         将标题、字幕、字幕总结进行缓存
         :return: None
@@ -95,12 +95,17 @@ class CacheHandler:
 
         logger.info("开始缓存字幕")
 
-        result = {"title": title, "subtitle": subtitle, "summary": summary}
+        result = {b_cid: {"title": title, "subtitle": subtitle, "summary": summary}}
         existing_data.append(result)
 
         with open(self._SUBTITLE_PATH, 'w', encoding='utf-8') as f:
             json.dump(existing_data, f)
         logger.info("题目缓存结束")
+        return {
+            "title": title,  # 视频标题
+            "subtitle": subtitle,  # 字幕内容
+            "summary": summary  # 字幕总结
+        }
 
     def get_subtitle_cache(self) -> List:
         """
@@ -112,12 +117,14 @@ class CacheHandler:
                 existing_data = json.load(f)  # 将json文件转换为列表
         else:
             existing_data = []
+            with open(self._SUBTITLE_PATH, 'w', encoding='utf-8') as f:
+                json.dump(existing_data, f)
 
         return existing_data
 
-
-
-
-
-
+    def judge_subtitle_cache(self, b_cid: str):
+        for data in self.get_subtitle_cache():
+            if b_cid in data:
+                matching_dict = data[b_cid]
+                return matching_dict
 
