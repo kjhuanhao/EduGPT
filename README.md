@@ -1,4 +1,4 @@
-# EduGPT
+# EduGPT (Demo)
 该项目从教师和学生的角色出发，结合大语言模型开发的AI应用，为教育降本增效的AI应用，让教育更加智能化，让学习更加高效化
 
 ## 项目介绍
@@ -15,7 +15,8 @@
 
 ### 我们为什么要做这样一个项目
 起因是报名参加了[百度飞桨的2023大模型应用创新挑战赛](https://aistudio.baidu.com/aistudio/competition/detail/998/0/introduction)
-同时我们也是两名学生，于是敲定主题，做教育相关的AI应用
+同时我们也是两名学生，于是敲定主题，做教育相关的AI应用，由于两个人都不是计算机专业的学生，一个会计的一个英专的，所以花费了不少功夫去学习大语言开发，终于在大概两周内，
+初步完成了这个项目的demo
 
 
 ## 项目展示
@@ -54,6 +55,9 @@ pip install -r requirements.txt.txt
 ```shell
 python3 app.py
 ```
+
+## 项目缺点
+由于本项目没有去微调大模型，而是调用openAI的api去开发，所以是存在不可避免的小问题，当然本项目已经足够体现部分大模型在教育方向的潜力
 
 ## 参考资料&项目
 - https://github.com/Aomferni/chatTests
