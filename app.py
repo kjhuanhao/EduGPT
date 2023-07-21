@@ -11,8 +11,8 @@ from service.generate_question_service import generate_question
 from service.initialize import initialize_state, check_settings
 from service.brush_questions_service import update_question_info
 from service.plugins_service import input_tip, output_chatbot
-from service.create_summary import create_summary
-from service.qa_service import generate_qa
+from service.create_summary_service import create_summary
+from service.qa_with_video_service import generate_qa
 from service.generate_question_service import remove_question
 
 
