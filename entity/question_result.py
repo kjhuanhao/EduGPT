@@ -4,6 +4,8 @@
 # @Author    : LaiJiahao
 # @Desc      : 选择题
 
+from typing import Dict
+
 
 class ChoiceQuestionResult:
     def __init__(self, response: str):
@@ -20,7 +22,7 @@ class ChoiceQuestionResult:
         self.explanation = structure["explanation"]
         self.type = "choice"
 
-    def get_choice_question(self):
+    def get_choice_question(self) -> Dict:
         return {
             "question": self.question,
             "options": self.options,
@@ -40,7 +42,7 @@ class ShortAnswerQuestionResult:
         self.explanation = structure["explanation"]
         self.type = "short_answer"
 
-    def get_short_answer_question(self):
+    def get_short_answer_question(self) -> Dict:
         return {
             "question": self.question,
             "clue": self.clue,
@@ -48,5 +50,3 @@ class ShortAnswerQuestionResult:
             "explanation": self.explanation,
             "type": self.type,
         }
-
-

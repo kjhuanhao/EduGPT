@@ -20,6 +20,9 @@ def initialize_state() -> Dict:
     cache_handler = CacheHandler()
     # question_cache = cache_handler.get_question_cache()
     # state["question_cache"] = question_cache
+    cache_handler = CacheHandler()
+
     state["subject_types"] = cache_handler.subject_types
     state["plugins"] = [value.value for value in list(Toolkit)]
+
     return state

@@ -4,5 +4,6 @@ langchain==0.0.201
 pandas==2.0.3
 numpy==1.23.5
 pandasai==0.6.11
-bilibili-api-python==1.15.1
+bilibili-api-python==15.5.1
 requests==2.31.0
+faiss-cpu==1.7.4

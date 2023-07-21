@@ -20,7 +20,7 @@ def input_tip(plugin_name: str):
 
     if plugin_name == Toolkit.StudyPlanDevelopment.value:
         return gr.update(
-            value="我在(两)周内。可以每周的(周一周二)每天学习(2)小时 ,我的学习主题是: (中国古代史) , 所属的科目是: (历史)")
+            value="我在(两)周内，可以每周的(周一周二)每天学习(2)小时，我的学习主题是: (中国古代史) ，所属的科目是: (历史)")
     if plugin_name == Toolkit.ChineseEssayScoring.value:
         return gr.update(
             value="请给我评分，我的作文题目是: (xx)，我的作文内容是: (xx)")
