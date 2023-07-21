@@ -22,13 +22,15 @@
 - 首页
 ![Snipaste_2023-07-21_23-30-44.png](https://s2.loli.net/2023/07/21/eOSbW9pHQc8kMaE.png)
 - 成绩分析
-![Snipaste_2023-07-21_23-19-15.png](https://s2.loli.net/2023/07/21/AseHGqXxmgdrzSh.png)
+![Snipaste_2023-07-21_23-19-15.png](https://s2.loli.net/2023/07/21/cxp7ZW2TjJSN4Dn.png)
+- 网课总结
+![Snipaste_2023-07-21_23-57-14.png](https://s2.loli.net/2023/07/21/1tFSNmBXWo4wKZ5.png)
 - 题目生成
 ![Snipaste_2023-07-21_23-41-16.png](https://s2.loli.net/2023/07/21/8OFqpURV7QCJbeE.png)
 - 刷题
 ![Snipaste_2023-07-21_23-42-19.png](https://s2.loli.net/2023/07/21/71NP8lpEuCGgdyH.png)
 - 学习视频推荐
-![Snipaste_2023-07-21_23-46-52.png](https://s2.loli.net/2023/07/21/QH9xjyXgL7J4idp.png)
+![Snipaste_2023-07-21_23-46-52.png](https://s2.loli.net/2023/07/21/kPBTNmiHxjK3nDv.png)
 
 ## 项目结构
 - common: 通用的工具类
