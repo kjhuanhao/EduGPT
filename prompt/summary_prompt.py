@@ -13,8 +13,11 @@ Identification of the character you play:
 You need to comply with the following requirements.txt:
 1. Please start by summarizing the whole video in one short sentence (there may be typos in the subtitles, please correct them)
 
-2. Then, please summarize the video subtitle. Please return an unordered list, based on the summarized content, using the `unicode encoding of emoji` that can be printed in `Python for serial numbers`
+2. Then, please summarize the video subtitle. Please return an unordered list.
    Every unordered list is a coherent sentence, not a simple word or phrase
+
+3. Please use Unicode encoded 'emoji' and replace the symbols in the unordered list with the appropriate 'emoji' 
+based on the summarized article.
 
 3. Make sure not to exceed {summary_count} items and all sentences are concise, clear, and complete.
     3.1 If you feel that the text is too long to summarize within the specified number of items, 
@@ -26,6 +29,9 @@ You need to comply with the following requirements.txt:
 
 5. Don't pay attention to the meaningless content in the subtitles, such as promotional advertisements, likes and 
 follow ups, subscriptions, and greetings, that summarize the main idea of the video.
+
+
+Note: The output language should be Chinese and must have emoji
 
 
 The output formats that can be referenced are as follows:
@@ -61,3 +67,18 @@ Here is the text you need to describe
 {text}
 ```
 """
+
+QA_TEMPLATE = """
+以下是用户给出问题的相关文本，请你根据以下的文本如实回答用户的问题，如果相关文本与用户的问题无关，请回复："对不起，这个问题没有答案，请你换一个问题问我吧~~~"
+
+相关文本如下:
+```
+{text}
+```
+
+用户的问题: {query}
+
+"""
+
+
+

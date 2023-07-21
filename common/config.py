@@ -17,12 +17,14 @@ load_dotenv(find_dotenv())
 
 class Config:
     openai_chat_model = "gpt-3.5-turbo"
+    openai_16k_chat_model = "gpt-3.5-turbo-16k"
     _llm = ChatOpenAI
     # conversation_llm = OpenAI(model_name=openai_chat_model, temperature=0.5)
     stochastic_llm = _llm(model_name=openai_chat_model, temperature=0.5)
     deterministic_llm = _llm(model_name=openai_chat_model, temperature=0)
     streaming_llm = _llm(model_name=openai_chat_model, temperature=0.5, streaming=True,
                          callbacks=[StreamingStdOutCallbackHandler()])
+    long_llm = _llm(model_name=openai_16k_chat_model, temperature=0)
 
     # @staticmethod
     # def create_conversation_chain(llm, prompt: BasePromptTemplate) -> ConversationChain:

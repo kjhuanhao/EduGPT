@@ -28,9 +28,10 @@ class SummaryWriter:
         :param summary_info:要进行摘要生成的文本
         :param summary_count:生成摘要的条目数量（默认为 10）
         """
+        self.b_cid = summary_info["bv_id"] + str(summary_info["cid"])
         self.title = summary_info["title"]
         self.subtitle = summary_info["subtitle"]
-        self.seg_length = 3400
+        self.seg_length = 3000
         self.summary_count = 5 if summary_count is None else summary_count
         self._llm = Config.deterministic_llm
         self._summary_chain = Config.create_llm_chain(llm=self._llm, prompt=SUMMARY_PROMPT)
@@ -48,7 +49,8 @@ class SummaryWriter:
         if len(pre_summary_text) >= 2:
             summary_ans = self._get_summary(summary_ans)
 
-        self._cache_handler.subtitle_cache(title=self.title,
+        self._cache_handler.subtitle_cache(b_cid=self.b_cid,
+                                           title=self.title,
                                            subtitle=self.subtitle,
                                            summary=summary_ans)
 
@@ -77,4 +79,3 @@ class SummaryWriter:
             subtitle=chunk
         )
         return summary_response
-
