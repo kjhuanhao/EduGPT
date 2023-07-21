@@ -1,4 +1,4 @@
-# EduGPT
+# EduGPT (Demo)
 该项目从教师和学生的角色出发，结合大语言模型开发的AI应用，为教育降本增效的AI应用，让教育更加智能化，让学习更加高效化
 
 ## 项目介绍
@@ -15,20 +15,23 @@
 
 ### 我们为什么要做这样一个项目
 起因是报名参加了[百度飞桨的2023大模型应用创新挑战赛](https://aistudio.baidu.com/aistudio/competition/detail/998/0/introduction)
-同时我们也是两名学生，于是敲定主题，做教育相关的AI应用
+同时我们也是两名学生，于是敲定主题，做教育相关的AI应用，由于两个人都不是计算机专业的学生，一个会计的一个英专的，所以花费了不少功夫去学习大语言开发，终于在大概两周内，
+初步完成了这个项目的demo
 
 
 ## 项目展示
 - 首页
 ![Snipaste_2023-07-21_23-30-44.png](https://s2.loli.net/2023/07/21/eOSbW9pHQc8kMaE.png)
 - 成绩分析
-![Snipaste_2023-07-21_23-19-15.png](https://s2.loli.net/2023/07/21/AseHGqXxmgdrzSh.png)
+![Snipaste_2023-07-21_23-19-15.png](https://s2.loli.net/2023/07/21/cxp7ZW2TjJSN4Dn.png)
+- 网课总结
+![Snipaste_2023-07-21_23-57-14.png](https://s2.loli.net/2023/07/21/1tFSNmBXWo4wKZ5.png)
 - 题目生成
 ![Snipaste_2023-07-21_23-41-16.png](https://s2.loli.net/2023/07/21/8OFqpURV7QCJbeE.png)
 - 刷题
 ![Snipaste_2023-07-21_23-42-19.png](https://s2.loli.net/2023/07/21/71NP8lpEuCGgdyH.png)
 - 学习视频推荐
-![Snipaste_2023-07-21_23-46-52.png](https://s2.loli.net/2023/07/21/QH9xjyXgL7J4idp.png)
+![Snipaste_2023-07-21_23-46-52.png](https://s2.loli.net/2023/07/21/kPBTNmiHxjK3nDv.png)
 
 ## 项目结构
 - common: 通用的工具类
@@ -52,6 +55,9 @@ pip install -r requirements.txt.txt
 ```shell
 python3 app.py
 ```
+
+## 项目缺点
+由于本项目没有去微调大模型，而是调用openAI的api去开发，所以是存在不可避免的小问题，当然本项目已经足够体现部分大模型在教育方向的潜力
 
 ## 参考资料&项目
 - https://github.com/Aomferni/chatTests

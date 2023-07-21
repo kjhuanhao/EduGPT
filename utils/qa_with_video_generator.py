@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-# @File      : qa_generator.py
+# @File      : qa_with_video_generator.py
 # @Time      : 2023/7/17
 # @Author    : LinZiHao
 # @Desc      : 文本 Q&A
@@ -54,7 +54,6 @@ class QAGenerator:
 
         for text in similarity_texts_lists:
             similarity_texts += f"{text.page_content} \n"
-        print(similarity_texts)
         result = self._chain.run(
             text=similarity_texts,
             query=self.query

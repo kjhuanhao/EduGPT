@@ -1,9 +1,9 @@
 # -*- coding:utf-8 -*-
-# @File      : create_summary.py
+# @File      : create_summary_service.py
 # @Time      : 2023/7/20
 # @Author    : LinZiHao
 # @Desc      : Q&A bot模块
-from utils.qa_generator import QAGenerator
+from utils.qa_with_video_generator import QAGenerator
 
 
 def generate_qa(qa_text: str, query: str, chat_history):

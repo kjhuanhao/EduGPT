@@ -41,7 +41,7 @@ def output_chatbot(plugins_select, instruction, chat_history):
 
     :return: 聊天记录
     """
-    print(chat_history)
+
     plugins = Plugins(instruction)
     bot_message = "请重试！"
 
