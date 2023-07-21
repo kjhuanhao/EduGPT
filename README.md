@@ -48,7 +48,7 @@
 ## 项目启动
 首先请确保你安装了本项目的运行环境
 ```shell
-pip install -r requirements.txt.txt
+pip install -r requirements.txt
 ```
 
 然后执行以下命令启动
@@ -66,4 +66,4 @@ python3 app.py
 
 ## 关于项目成员
 - [赖佳豪](https://laijiahao.cn/) 专业：会计学
-- [林子豪]() 专业：英语
+- [林子豪](https://github.com/lindate) 专业：英语
