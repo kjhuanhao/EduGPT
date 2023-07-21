@@ -9,7 +9,7 @@ import pandas as pd
 from service.score_analyzer_service import update_result, execute_score_analyzer
 from service.generate_question_service import generate_question
 from service.initialize import initialize_state
-from service.brush_questions import update_question_info
+from service.brush_questions_service import update_question_info
 from service.plugins_service import input_tip, output_chatbot
 
 
@@ -79,6 +79,58 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
                               outputs=[analyzer_plot, analyzer_textbox],
                               )
     """
+    网课总结
+    """
+    with gr.Tab("网课总结"):
+        gr.Markdown("# 网课总结")
+
+
+    """
+    题目生成
+    """
+    with gr.Tab("题目生成"):
+        gr.Markdown("# 智能题目生成助手")
+        with gr.Box():
+            with gr.Row():
+                show_result = gr.Textbox(
+                    interactive=False,
+                    lines=5,
+                    label="题目生成结果(题目生成后会自动保存到本地题库中)",
+                    show_label=True)
+
+            with gr.Row():
+                with gr.Column():
+                    # summary出题
+                    question_type = gr.Radio(
+                        choices=["选择题", "简答题"],
+                        type="value",
+                        value="选择题",
+                        interactive=True,
+                        label="题目类型",
+                        show_label=True)
+
+                    subject_type = gr.Radio(
+                        choices=subject_types,
+                        type="value",
+                        value="History",
+                        interactive=True,
+                        label="科目类型",
+                        show_label=True)
+
+                    course = gr.Dropdown(label="根据看过的课程出题(可为空)", show_label=True)
+
+                with gr.Column():
+                    desc_input = gr.Textbox(placeholder="请描述你想要生成的题目，例如：有关中国外交的近代史",
+                                            label="题目描述")
+
+                    generate_button = gr.Button(value="生成题目")
+                    # remove_button = gr.ClearButton(value="移除题目", variant="stop")
+
+                    generate_button.click(fn=generate_question,
+                                          inputs=[question_type, desc_input, subject_type],
+                                          outputs=show_result)
+
+    """
     【学生】刷题工具
     """
     with gr.Tab("【学生】刷题工具"):
@@ -96,7 +148,10 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
         with gr.Row():
             with gr.Column():
                 # gr.Markdown("## 题目")
+
                 show_question = gr.Label(value="选择一个科目类型开始刷题吧！", label="题目", show_label=True)
+                # verify_answer = gr.Button(value="检查")
+
                 # 选择题组件
                 answer_choices = gr.Radio(
                     choices=[],
@@ -140,44 +195,6 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
                 show_question.change(fn=lambda: gr.update(value=None), outputs=show_text)
 
     """
-    题目生成
-    """
-    with gr.Tab("【学生】题目生成"):
-        gr.Markdown("# 智能题目生成助手")
-        with gr.Box():
-            with gr.Row():
-                show_result = gr.Textbox(
-                    interactive=False,
-                    lines=5,
-                    label="题目生成结果(题目生成后会自动保存到本地题库中，点击移除按钮可以移除)",
-                    show_label=True)
-
-            with gr.Row():
-                question_type = gr.Radio(
-                    choices=["选择题", "简答题"],
-                    type="value",
-                    value="选择题",
-                    interactive=True,
-                    label="题目类型",
-                    show_label=True)
-                subject_type = gr.Radio(
-                    choices=subject_types,
-                    type="value",
-                    value="History",
-                    interactive=True,
-                    label="科目类型",
-                    show_label=True)
-            with gr.Row():
-                with gr.Column():
-                    desc_input = gr.Textbox(placeholder="请描述你想要生成的题目，例如：有关中国外交的近代史",
-                                            label="题目描述")
-                with gr.Column():
-                    generate_button = gr.Button(value="生成题目")
-                    remove_button = gr.ClearButton(value="移除题目", variant="stop")
-                    generate_button.click(fn=generate_question, inputs=[question_type, desc_input, subject_type],
-                                          outputs=show_result)
-
-    """
     插件
     """
     with gr.Tab("智能AI插件"):
@@ -190,13 +207,9 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
         input_instruction = gr.Textbox(label="输入指令", show_label=True, placeholder="请根据提示输入指令", lines=9)
         with gr.Row():
             run_button = gr.Button(value="Run")
-            run_button.click(fn=output_chatbot, inputs=[plugins_select, input_instruction, chatbot], outputs=[input_instruction, chatbot])
+            run_button.click(fn=output_chatbot, inputs=[plugins_select, input_instruction, chatbot],
+                             outputs=[input_instruction, chatbot])
             clear_button = gr.ClearButton([input_instruction, chatbot])
-    with gr.Tab("设置"):
-        gr.Markdown("# 在使用本项目之前，你需要做一些简单的设置")
-        input_api_key = gr.Textbox(label="输入你的API Key", show_label=True, placeholder="输入你的API Key")
-        select_model = gr.Dropdown(choices=["gpt-3.5-turbo", "gpt-3.5-turbo-16k", "gpt-4", "gpt-4-32k"], interactive=True, label="选择openAI模型", show_label=True)
-        save_button = gr.Button(value="保存设置")
 
 if __name__ == "__main__":
     demo.launch()

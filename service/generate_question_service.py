@@ -25,3 +25,6 @@ def generate_question(question_type: str, desc: str, subject: str):
         result = question_assistant.generate_short_answer_question(desc, subject)
         question = result.get_short_answer_question().get("question")
         return gr.update(value=question)
+
+
+
