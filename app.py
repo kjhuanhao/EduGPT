@@ -31,8 +31,21 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
 
     with gr.Tab("🔥️主页"):
         gr.Markdown("## ❤️感谢你使用本应用，在开始前请确保下面的配置你都进行了设置，可以点击检查按钮，将为你检测配置状态")
-        api_key = gr.Checkbox(value=False, label="OpenAI API Key", interactive=False)
-        bilibili_SESSDATA = gr.Checkbox(value=False, label="Bilibili SESSDATA(可选)", interactive=False)
+        with gr.Row():
+            with gr.Column():
+                api_key = gr.Checkbox(value=False, label="OpenAI API Key", interactive=False)
+                bilibili_SESSDATA = gr.Checkbox(value=False, label="Bilibili SESSDATA(可选)", interactive=False)
+
+            with gr.Column():
+                toggle_dark = gr.Checkbox(label="切换主题")
+                toggle_dark.select(
+                    None,
+                    _js="""
+                    () => {
+                        document.body.classList.toggle('dark');
+                    }
+                    """,
+                )
         gr.Button("检查").click(fn=check_settings, outputs=[api_key, bilibili_SESSDATA])
         # with gr.Box():
         #     gr.Markdown("- 项目地址: https://github.com/kjhuanhao/EduGPT/tree/dev")
@@ -87,7 +100,7 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
             desc_input = gr.Textbox(placeholder="输入你想获得的数据，例如: 展示所有Test的最高分和最低分",
                                     label="分析目标")
 
-        analyzer_button = gr.Button(value="开始分析")
+        analyzer_button = gr.Button(value="开始分析", variant="primary")
         analyzer_button.click(fn=execute_score_analyzer,
                               inputs=[desc_input, file, dimension],
                               outputs=[analyzer_plot, analyzer_textbox],
@@ -179,7 +192,7 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
                     desc_input = gr.Textbox(placeholder="请描述你想要生成的题目，例如：有关中国外交的近代史",
                                             label="题目描述")
 
-                    generate_button = gr.Button(value="生成题目")
+                    generate_button = gr.Button(value="生成题目", variant="primary")
 
                     remove_button = gr.ClearButton(value="移除题目", variant="stop")
 
@@ -265,7 +278,7 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
             plugins_select.change(fn=input_tip, inputs=plugins_select, outputs=tip)
         input_instruction = gr.Textbox(label="输入指令", show_label=True, placeholder="请根据提示输入指令", lines=9)
         with gr.Row():
-            run_button = gr.Button(value="Run")
+            run_button = gr.Button(value="Run", variant="primary")
             run_button.click(fn=output_chatbot, inputs=[plugins_select, input_instruction, chatbot],
                              outputs=[input_instruction, chatbot])
             clear_button = gr.ClearButton([input_instruction, chatbot])
