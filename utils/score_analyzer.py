@@ -11,12 +11,8 @@ import pandas as pd
 from common.config import Config
 from loguru import logger
 from pandas import DataFrame
-from typing import Optional, Dict
+from typing import Dict
 from prompt.structured_prompt import PLOT_PROMPT
-from langchain import LLMChain
-from langchain.prompts import BasePromptTemplate
-from langchain.base_language import BaseLanguageModel
-from langchain.chat_models import ChatOpenAI
 from pandasai import PandasAI
 from pandasai.llm.openai import OpenAI
 from exceptions.plot_exception import PlotException
@@ -90,7 +86,6 @@ class ScoreAnalyzer:
         print(response)
         logger.info("成功返回Pandas AI结果")
         return response
-
 
     @staticmethod
     def _get_df_schema(df: DataFrame) -> str:

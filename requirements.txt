@@ -7,3 +7,5 @@ pandasai==0.6.11
 bilibili-api-python==15.5.1
 requests==2.31.0
 faiss-cpu==1.7.4
+loguru~=0.7.0
+python-dotenv~=1.0.0

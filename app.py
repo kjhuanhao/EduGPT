@@ -8,7 +8,7 @@ import gradio as gr
 import pandas as pd
 from service.score_analyzer_service import update_result, execute_score_analyzer
 from service.generate_question_service import generate_question
-from service.initialize import initialize_state
+from service.initialize import initialize_state, check_settings
 from service.brush_questions_service import update_question_info
 from service.plugins_service import input_tip, output_chatbot
 from service.create_summary import create_summary
@@ -28,6 +28,17 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
 
     gr.Markdown("# Welcome to EduGPT! 🌟🚀")
     gr.Markdown("为教育降本增效的AI应用")
+
+    with gr.Tab("🔥️主页"):
+        gr.Markdown("## ❤️感谢你使用本应用，在开始前请确保下面的配置你都进行了设置，可以点击检查按钮，将为你检测配置状态")
+        api_key = gr.Checkbox(value=False, label="OpenAI API Key", interactive=False)
+        bilibili_SESSDATA = gr.Checkbox(value=False, label="Bilibili SESSDATA(可选)", interactive=False)
+        gr.Button("检查").click(fn=check_settings, outputs=[api_key, bilibili_SESSDATA])
+        # with gr.Box():
+        #     gr.Markdown("- 项目地址: https://github.com/kjhuanhao/EduGPT/tree/dev")
+        #     gr.Markdown("- 作者: [LaiJiahao](https://github.com/kjhuanhao)")
+        #     gr.Markdown("- 作者: [LinZihao](https://github.com/lindate)")
+
 
     """
     【教师】智能成绩分析师
@@ -89,7 +100,7 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
         with gr.Row(equal_height=True):
             with gr.Column():
                 bv_input = gr.Textbox(placeholder="请输入你想要生成总结的视频链接",
-                                      label="输入链接(当前仅支持Bilibili)",
+                                      label="输入视频链接(当前仅支持Bilibili)",
                                       interactive=True,
                                       max_lines=4)
 
@@ -103,7 +114,8 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
                     with gr.Box():
                         gr.Markdown("# Q&A bot")
                         chatbot = gr.Chatbot(label="AI Answer")
-                        qa_input = gr.Textbox(label="Chat With Video", interactive=True, placeholder="在这里输入你的问题")
+                        qa_input = gr.Textbox(label="Chat With Video", interactive=True,
+                                              placeholder="在这里输入你的问题")
                         with gr.Row():
                             send_button = gr.Button(value="发送")
 
