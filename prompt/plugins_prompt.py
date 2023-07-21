@@ -71,10 +71,12 @@ VIDEO_RECOMMENDATION_TEMPLATE = """
 视频信息如下：
 {video_info}
 
-以下述的格式格式提供你的输出：
+注意：以下述的格式格式提供你的输出，且以有序列表格式返回：
+```
 # 视频标题
 # 视频描述(适当优化描述，以供我更好地理解)
 # 视频链接
+```
 """
 
 INSPIRATION_TEMPLATE = """

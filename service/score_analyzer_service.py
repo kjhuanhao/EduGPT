@@ -32,15 +32,18 @@ def execute_score_analyzer(desc: str, file_, choice: int):
     if file_ is None:
         raise gr.Error("请上传文件")
 
-    file_name = str(file_.name).replace("\\", "/")
-    score_analyzer = ScoreAnalyzer(file_name)
-    if choice == 0:
-        result = score_analyzer.plot_df(desc)
-        codeblocks = result["codeblocks"]
-        exec(codeblocks, globals(), locals())
-        func = eval('chart_plot()', globals(), locals())
-        return [gr.update(value=func), gr.update()]
+    try:
+        file_name = str(file_.name).replace("\\", "/")
+        score_analyzer = ScoreAnalyzer(file_name)
+        if choice == 0:
+            result = score_analyzer.plot_df(desc)
+            codeblocks = result["codeblocks"]
+            exec(codeblocks, globals(), locals())
+            func = eval('chart_plot()', globals(), locals())
+            return [gr.update(value=func), gr.update()]
 
-    if choice == 1:
-        result = score_analyzer.chat_with_data(desc)
-        return [gr.update(), gr.update(value=result)]
+        if choice == 1:
+            result = score_analyzer.chat_with_data(desc)
+            return [gr.update(), gr.update(value=result)]
+    except Exception as e:
+        raise gr.Error("分析失败，请重试")

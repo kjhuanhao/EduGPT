@@ -30,10 +30,15 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
     gr.Markdown("为教育降本增效的AI应用")
 
     with gr.Tab("🔥️主页"):
-        gr.Markdown("❤️感谢你使用本应用，在开始前请确保下面的配置你都进行了设置，可以点击检查按钮，将为你检测配置状态")
+        gr.Markdown("## ❤️感谢你使用本应用，在开始前请确保下面的配置你都进行了设置，可以点击检查按钮，将为你检测配置状态")
         api_key = gr.Checkbox(value=False, label="OpenAI API Key", interactive=False)
         bilibili_SESSDATA = gr.Checkbox(value=False, label="Bilibili SESSDATA(可选)", interactive=False)
         gr.Button("检查").click(fn=check_settings, outputs=[api_key, bilibili_SESSDATA])
+        # with gr.Box():
+        #     gr.Markdown("- 项目地址: https://github.com/kjhuanhao/EduGPT/tree/dev")
+        #     gr.Markdown("- 作者: [LaiJiahao](https://github.com/kjhuanhao)")
+        #     gr.Markdown("- 作者: [LinZihao](https://github.com/lindate)")
+
 
     """
     【教师】智能成绩分析师
