@@ -21,7 +21,7 @@
 
 ## 项目展示
 - 首页
-![Snipaste_2023-07-21_23-30-44.png](https://s2.loli.net/2023/07/21/eOSbW9pHQc8kMaE.png)
+![Snipaste_2023-07-22_00-43-53.png](https://s2.loli.net/2023/07/22/9Y3kjWboUzIexar.png)
 - 成绩分析
 ![Snipaste_2023-07-21_23-19-15.png](https://s2.loli.net/2023/07/21/cxp7ZW2TjJSN4Dn.png)
 - 网课总结
