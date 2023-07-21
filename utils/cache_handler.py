@@ -84,6 +84,18 @@ class CacheHandler:
 
         return existing_data
 
+    def pop_question(self, subject_type):
+        """
+        移除最后一个问题
+        """
+        logger.info("操作删除问题")
+        question_cache = self.get_question_cache()
+        subject_questions = question_cache[subject_type]
+        subject_questions.pop()
+        question_cache[subject_type] = subject_questions
+        with open(self._QUESTION_PATH, 'w', encoding='utf-8') as f:
+            json.dump(question_cache, f)
+
     def subtitle_cache(self, b_cid: str, title: str, subtitle: str, summary: str) -> Dict:
         """
         将标题、字幕、字幕总结进行缓存
@@ -121,6 +133,16 @@ class CacheHandler:
                 json.dump(existing_data, f)
 
         return existing_data
+
+    def get_summary_cache_byId(self, b_cid: str) -> str:
+        """
+        根据b_cid获取字幕总结
+        :return: 字幕总结
+        """
+        for data in self.get_subtitle_cache():
+            if b_cid in data:
+                matching_dict = data[b_cid]
+                return matching_dict["summary"]
 
     def judge_subtitle_cache(self, b_cid: str):
         for data in self.get_subtitle_cache():

@@ -14,9 +14,10 @@ from langchain.chains import LLMChain
 from langchain.prompts import BasePromptTemplate
 
 
+@DeprecationWarning
 class DescriptionGenerator:
-    def __init__(self, title: str, ):
-        self.target_title = title
+    def __init__(self, course_id: str):
+        self.course_id = course_id
         self._llm = Config.stochastic_llm
         self._description_chain = Config.create_llm_chain(self._llm, DESCRIPTION_PROMPT)
         self._cache_handler = CacheHandler()
@@ -34,22 +35,26 @@ class DescriptionGenerator:
                                                                           subject_type)
         return question
 
-    def get_summary_text_cache(self) -> None:
+    def _get_summary_text_cache(self) -> None:
         """
         获取缓存的字幕总结
         :return:
         """
+        summary_text = None
         info = self._cache_handler.get_subtitle_cache()
-        for dictionary in info:
-            if "title" in dictionary and dictionary['title'] == self.target_title:
-                return dictionary.get('summary')
-        raise KeyError(f"未找到指定的 title 键值对")
+        for course_info in info:
+            for course_id in course_info:
+                if course_id == self.course_id:
+                    summary_text = course_info[course_id].get("summary_text")
+                    return summary_text
+        if summary_text is None:
+            raise KeyError(f"未找到指定的 title 键值对")
 
     def generate_description(self, description_num: Optional[int] = None):
         description_num = 3 if description_num is None else description_num
         desc = self._description_chain.run(
             description_num=description_num,
-            text=self.get_summary_text_cache()
+            text=self._get_summary_text_cache()
         )
         return desc
 

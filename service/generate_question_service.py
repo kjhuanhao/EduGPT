@@ -6,6 +6,8 @@
 
 import gradio as gr
 from utils.question_assistant import QuestionAssistant
+from utils.cache_handler import CacheHandler
+from entity.question_result import ChoiceQuestionResult, ShortAnswerQuestionResult
 
 
 def generate_question(question_type: str, desc: str, subject: str):
@@ -17,14 +19,21 @@ def generate_question(question_type: str, desc: str, subject: str):
 
     """
     question_assistant = QuestionAssistant()
+    question = "题目获取失败"
     if question_type == "选择题":
         result = question_assistant.generate_choice_question(desc, subject)
-        question = result.get_choice_question().get("question")
-        return gr.update(value=question)
+        question = ChoiceQuestionResult.get_choice_question(result)["question"]
     if question_type == "简答题":
         result = question_assistant.generate_short_answer_question(desc, subject)
-        question = result.get_short_answer_question().get("question")
-        return gr.update(value=question)
+        question = ShortAnswerQuestionResult.get_short_answer_question(result)["question"]
+
+    return gr.update(value=question)
 
 
-
+def remove_question(question: str, subject_type: str):
+    if question:
+        cache_handler = CacheHandler()
+        cache_handler.pop_question(subject_type)
+        return gr.update(value="")
+    else:
+        raise gr.Error("移除失败")

@@ -3,17 +3,25 @@
 # @Time      : 2023/7/18
 # @Author    : LinZiHao
 # @Desc      : bili字幕下载模块
+import json
 
 import requests
 import os
-from typing import List
-from dotenv import load_dotenv, find_dotenv
+import re
 from exceptions.subtitle_download_exception import SubTitleDownloadException
 from exceptions.cookie_missing_exception import CookieMissingException
 from bilibili_api import sync, video
 from loguru import logger
+from common.config import Config
 
-load_dotenv(find_dotenv(), override=True)
+
+def _extract_bv_number(url):
+    pattern = r'BV([A-Za-z0-9]+)'
+    match = re.search(pattern, url)
+    if match:
+        return match.group(0)
+    else:
+        return None
 
 
 class BiliSubtitleDownloader:
@@ -28,31 +36,28 @@ class BiliSubtitleDownloader:
             print(f'CC 字幕内容: {subtitle}')
     """
     _HEADERS = {
-        'authority': 'api.bilibili.com',
-        'accept': 'application/json, text/plain, */*',
-        'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
-        'origin': 'https://www.bilibili.com',
-        'referer': 'https://www.bilibili.com/',
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+        'Host': 'api.bilibili.com',
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36',
     }
     _PAGE_LIST_URL = 'https://api.bilibili.com/x/player/pagelist'
     _SUBTITLE_URL = f'https://api.bilibili.com/x/player/v2'
 
-    # TODO cookie有问题
     def __init__(self,
-                 bv_id: str,
+                 link: str,
                  p_num: str,
                  ) -> None:
         """
-        :param bv_id:视频的 BV 号
+        :param link:视频链接
         :param p_num:分集号
         """
-        self.bv_id = bv_id
+        self.bv_id = _extract_bv_number(link)
         self.p_num = int(p_num)
-        self.cookie = {'SESSDATA': os.getenv("SESSDATA")}
-        if self.cookie is None:
-            logger.warning("cookie是空的")
-            raise CookieMissingException("cookie不存在")
+        self.cookie = {'SESSDATA': Config.SESSDATA}
+        # if self.cookie is None:
+        #     logger.warning("cookie是空的")
+        #     raise CookieMissingException("cookie不存在")
 
     def get_bili_info(self) -> dict:
         return {"bv_id": self.bv_id,
@@ -70,7 +75,7 @@ class BiliSubtitleDownloader:
         logger.info("成功获取标题")
         return title
 
-    def _download_subtitle(self) -> str:
+    def download_subtitle(self) -> str:
         """
         清洗subtitle_url页面内容
         :return: subtitle
@@ -104,9 +109,9 @@ class BiliSubtitleDownloader:
             ('bvid', self.bv_id),
             ('cid', cid)
         )
-        headers = self._HEADERS.copy()  # 复制_HEADERS字典
-        headers['Cookie'] = "; ".join(f"{key}={value}" for key, value in self.cookie.items())  # 将cookie添加到headers
-        response = requests.get(self._SUBTITLE_URL, headers=headers, params=params)
+        # headers = self._HEADERS.copy()  # 复制_HEADERS字典
+        # headers['Cookie'] = "; ".join(f"{key}={value}" for key, value in self.cookie.items())  # 将cookie添加到headers
+        response = requests.get(self._SUBTITLE_URL, headers=self._HEADERS, params=params, cookies=self.cookie)
         subtitles = response.json()['data']['subtitle']['subtitles']
         if subtitles:
             subtitles = ['https:' + sub['subtitle_url'] for sub in subtitles]
@@ -125,8 +130,3 @@ class BiliSubtitleDownloader:
             # print(body)
             return body
         raise SubTitleDownloadException("请求获取subtitle_url页面内容失败，请确保网络良好")
-
-
-if __name__ == '__main__':
-    b = BiliSubtitleDownloader("BV1qW4y1a7fU", "0")._download_subtitle()
-    print(b)

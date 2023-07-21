@@ -10,7 +10,9 @@ from prompt.summary_prompt import SUMMARY_TEMPLATE, DESCRIPTION_TEMPLATE, QA_TEM
 from prompt.question_prompt import (
     QUESTION_CHOICE_TEMPLATE,
     QUESTION_SHORT_ANSWER_TEMPLATE,
-    VERIFY_ANSWER_TEMPLATE
+    VERIFY_ANSWER_TEMPLATE,
+    VIDEO_QUESTION_CHOICE_TEMPLATE,
+    VIDEO_QUESTION_SHORT_ANSWER_TEMPLATE
 )
 from prompt.plugins_prompt import (
     STUDY_PLAN_TEMPLATE,
@@ -70,4 +72,14 @@ INSPIRATION_PROMPT = PromptTemplate(
 
 QA_PROMPT = PromptTemplate(
     input_variables=["text", "query"], template=QA_TEMPLATE
+)
+
+# 根据视频总结出题的选择题prompt
+VIDEO_QUESTION_CHOICE_PROMPT = PromptTemplate(
+    input_variables=["summary", "instruction", "subject"], template=VIDEO_QUESTION_CHOICE_TEMPLATE
+)
+
+# 根据视频总结出题的简答题prompt
+VIDEO_QUESTION_SHORT_ANSWER_PROMPT = PromptTemplate(
+    input_variables=["summary", "instruction", "subject"], template=VIDEO_QUESTION_SHORT_ANSWER_TEMPLATE
 )
