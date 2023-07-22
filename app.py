@@ -116,13 +116,16 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
             with gr.Column():
                 bv_input = gr.Textbox(placeholder="请输入你想要生成总结的视频链接",
                                       label="输入视频链接(当前仅支持Bilibili)",
+                                      value='https://www.bilibili.com/video/BV1qW4y1a7fU/?spm_id_from=333.337.search-card.all.click&vd_source=984365527a4368550ac4049d945cacc3',
                                       interactive=True,
                                       max_lines=4)
 
                 p_input = gr.Textbox(placeholder="请输入分P号，默认为0",
                                      label="输入分P号",
+                                     value="0",
                                      interactive=True,
                                      max_lines=4)
+
                 summary_button = gr.Button("开始总结")
 
                 with gr.Box():
@@ -146,6 +149,7 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
                     lines=10,
                     label="AI总结",
                     show_label=True, )
+
                 summary_button.click(fn=create_summary,
                                      inputs=[bv_input, p_input],
                                      outputs=[info_output, summary_output])

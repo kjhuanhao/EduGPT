@@ -19,11 +19,10 @@ def create_summary(link: str, p_input: str):
     # 下载字幕
     bilibili_subtitle_downloader = BiliSubtitleDownloader(link, p_input)
     bili_info = bilibili_subtitle_downloader.get_bili_info()
-    bili_subtitle = bilibili_subtitle_downloader.download_subtitle()
-
     bili_b_cid = bili_info["bv_id"] + str(bili_info["cid"])
 
     if CacheHandler().judge_subtitle_cache(bili_b_cid) is None:
+        bili_subtitle = bilibili_subtitle_downloader.download_subtitle()
         bili_info["subtitle"] = bili_subtitle
         bili_summary = SummaryWriter(bili_info).write_summary()
         return [gr.update(value=bili_subtitle), gr.update(value=bili_summary)]

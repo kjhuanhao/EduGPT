@@ -30,7 +30,7 @@ class QAGenerator:
         :param query: 提问词
         """
         self.qa_text = qa_text
-        self.seg_length = 3400
+        self.seg_length = 3000
         self.query = query
         self._llm = Config.get_long_llm()
         self._chain = Config.create_llm_chain(self._llm, QA_PROMPT)
@@ -58,4 +58,5 @@ class QAGenerator:
             text=similarity_texts,
             query=self.query
         )
+        logger.info("正在返回回复")
         return result
