@@ -3,13 +3,10 @@
 # @Time      : 2023/7/18
 # @Author    : LinZiHao
 # @Desc      : bili字幕下载模块
-import json
 
 import requests
-import os
 import re
 from exceptions.subtitle_download_exception import SubTitleDownloadException
-from exceptions.cookie_missing_exception import CookieMissingException
 from bilibili_api import sync, video
 from loguru import logger
 from common.config import Config
@@ -54,7 +51,7 @@ class BiliSubtitleDownloader:
         """
         self.bv_id = _extract_bv_number(link)
         self.p_num = int(p_num)
-        self.cookie = {'SESSDATA': Config.SESSDATA}
+        self.cookie = {'SESSDATA': Config.get_SESSDATA()}
         # if self.cookie is None:
         #     logger.warning("cookie是空的")
         #     raise CookieMissingException("cookie不存在")

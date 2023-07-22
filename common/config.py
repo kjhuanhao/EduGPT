@@ -9,28 +9,40 @@ from langchain.chat_models import ChatOpenAI
 from langchain.prompts import BasePromptTemplate
 from langchain.chains import LLMChain
 from langchain.base_language import BaseLanguageModel
-from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
-from dotenv import load_dotenv, find_dotenv
 
 
-load_dotenv(find_dotenv())
+def get_openai_proxy():
+    return os.getenv("OPENAI_API_PROXY")
+
+
+def get_openai_key():
+    return os.getenv("OPENAI_API_KEY")
 
 
 class Config:
-    proxy = os.getenv("OPENAI_API_PROXY")
-    if proxy is not None:
-        os.environ["OPENAI_API_BASE"] = os.getenv("OPENAI_API_PROXY")
+    api_key = os.getenv("OPENAI_API_KEY")
+    if api_key is None:
+        os.environ["OPENAI_API_KEY"] = "sk"
+
     openai_chat_model = "gpt-3.5-turbo"
     openai_16k_chat_model = "gpt-3.5-turbo-16k"
-    _llm = ChatOpenAI
-    # conversation_llm = OpenAI(model_name=openai_chat_model, temperature=0.5)
-    stochastic_llm = _llm(model_name=openai_chat_model, temperature=0.5)
-    deterministic_llm = _llm(model_name=openai_chat_model, temperature=0)
-    streaming_llm = _llm(model_name=openai_chat_model, temperature=0.5, streaming=True,
-                         callbacks=[StreamingStdOutCallbackHandler()])
-    long_llm = _llm(model_name=openai_16k_chat_model, temperature=0)
-    SESSDATA = os.getenv("SESSDATA")
 
+    @staticmethod
+    def get_SESSDATA():
+        return os.getenv("SESSDATA")
+
+    @staticmethod
+    def get_stochastic_llm():
+        print(get_openai_key())
+        return ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.5, openai_api_key=get_openai_key(), openai_api_base=get_openai_proxy())
+
+    @staticmethod
+    def get_deterministic_llm():
+        return ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0, openai_api_key=get_openai_key(), openai_api_base=get_openai_proxy())
+
+    @staticmethod
+    def get_long_llm():
+        return ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0, openai_api_key=get_openai_key(), openai_api_base=get_openai_proxy())
 
     @staticmethod
     def create_llm_chain(llm: BaseLanguageModel, prompt: BasePromptTemplate) -> LLMChain:

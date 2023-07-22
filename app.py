@@ -8,7 +8,7 @@ import gradio as gr
 import pandas as pd
 from service.score_analyzer_service import update_result, execute_score_analyzer
 from service.generate_question_service import generate_question
-from service.initialize import initialize_state, check_settings
+from service.initialize import initialize_state, set_env
 from service.brush_questions_service import update_question_info
 from service.plugins_service import input_tip, output_chatbot
 from service.create_summary_service import create_summary
@@ -30,14 +30,16 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
     gr.Markdown("为教育降本增效的AI应用")
 
     with gr.Tab("🔥️主页"):
-        gr.Markdown("## ❤️感谢你使用本应用，在开始前请确保下面的配置你都进行了设置，可以点击检查按钮，将为你检测配置状态")
+        gr.Markdown("## ❤️感谢你使用本应用，在开始前请确保下面的配置你都进行了设置，可以点击确定按钮，将为你检测配置状态")
         with gr.Row():
             with gr.Column():
-                api_key = gr.Checkbox(value=False, label="OpenAI API Key", interactive=False)
-                bilibili_SESSDATA = gr.Checkbox(value=False, label="Bilibili SESSDATA(可选)", interactive=False)
+                api_key = gr.Textbox(label="OpenAI API Key")
+                bilibili_SESSDATA = gr.Textbox(label="Bilibili SESSDATA(可选)")
+                proxy_url = gr.Textbox(label="代理地址(可选)", value="https://api.openai-proxy.com/v1")
 
             with gr.Column():
                 toggle_dark = gr.Checkbox(label="切换主题")
+                info = gr.Label(value="❌状态：未设置", show_label=False)
                 toggle_dark.select(
                     None,
                     _js="""
@@ -46,7 +48,7 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
                     }
                     """,
                 )
-        gr.Button("检查").click(fn=check_settings, outputs=[api_key, bilibili_SESSDATA])
+        gr.Button("确定").click(fn=set_env, inputs=[api_key, bilibili_SESSDATA, proxy_url], outputs=info)
         # with gr.Box():
         #     gr.Markdown("- 项目地址: https://github.com/kjhuanhao/EduGPT/tree/dev")
         #     gr.Markdown("- 作者: [LaiJiahao](https://github.com/kjhuanhao)")
