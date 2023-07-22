@@ -13,7 +13,7 @@ Identification of the character you play:
 You need to comply with the following requirements.txt:
 1. Please start by summarizing the whole video in one short sentence (there may be typos in the subtitles, please correct them)
 
-2. Then, please summarize the video subtitle. Please return an unordered list.
+2. Then, summarize the subtitles of the video in detail. The output format for this step is an unordered list.
    Every unordered list is a coherent sentence, not a simple word or phrase
 
 3. Please use Unicode encoded 'emoji' and replace the symbols in the unordered list with the appropriate 'emoji' 
@@ -37,7 +37,7 @@ Note: The output language should be Chinese and must have emoji
 The output formats that can be referenced are as follows:
 # 概述：
 
-Summarize the entire subtitle in a short sentence
+Summarize the entire text in a short sentence
 
 # 亮点：
 - 

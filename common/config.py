@@ -42,7 +42,7 @@ class Config:
 
     @staticmethod
     def get_long_llm():
-        return ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0, openai_api_key=get_openai_key(), openai_api_base=get_openai_proxy())
+        return ChatOpenAI(model_name="gpt-3.5-turbo-16k", temperature=0, openai_api_key=get_openai_key(), openai_api_base=get_openai_proxy())
 
     @staticmethod
     def create_llm_chain(llm: BaseLanguageModel, prompt: BasePromptTemplate) -> LLMChain:
