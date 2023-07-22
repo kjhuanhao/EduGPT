@@ -4,3 +4,4 @@
 .env
 cache
 __pycache__
+cookie
