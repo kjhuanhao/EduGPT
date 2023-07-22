@@ -116,7 +116,7 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
             with gr.Column():
                 bv_input = gr.Textbox(placeholder="请输入你想要生成总结的视频链接",
                                       label="输入视频链接(当前仅支持Bilibili)",
-                                      value='https://www.bilibili.com/video/BV1qW4y1a7fU/?spm_id_from=333.337.search-card.all.click&vd_source=984365527a4368550ac4049d945cacc3',
+                                      value='https://www.bilibili.com/video/BV1th411W7PA/?spm_id_from=333.788&vd_source=984365527a4368550ac4049d945cacc3',
                                       interactive=True,
                                       max_lines=4)
 
@@ -135,6 +135,7 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
                         qa_input = gr.Textbox(label="Chat With Video", interactive=True,
                                               placeholder="在这里输入你的问题")
                         with gr.Row():
+                            clear = gr.ClearButton([qa_input, chatbot], value="清除")
                             send_button = gr.Button(value="发送")
 
             with gr.Column():
@@ -149,6 +150,7 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
                     lines=10,
                     label="AI总结",
                     show_label=True, )
+
 
                 summary_button.click(fn=create_summary,
                                      inputs=[bv_input, p_input],

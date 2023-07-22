@@ -53,7 +53,7 @@ class SummaryWriter:
                                            title=self.title,
                                            subtitle=self.subtitle,
                                            summary=summary_ans)
-
+        logger.info("返回总结")
         return summary_ans
 
     def _summary_seg_content(self) -> List[str]:

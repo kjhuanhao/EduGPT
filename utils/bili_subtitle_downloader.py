@@ -3,6 +3,7 @@
 # @Time      : 2023/7/18
 # @Author    : LinZiHao
 # @Desc      : bili字幕下载模块
+import time
 
 import requests
 import re
@@ -108,6 +109,7 @@ class BiliSubtitleDownloader:
         )
         # headers = self._HEADERS.copy()  # 复制_HEADERS字典
         # headers['Cookie'] = "; ".join(f"{key}={value}" for key, value in self.cookie.items())  # 将cookie添加到headers
+        time.sleep(3)
         response = requests.get(self._SUBTITLE_URL, headers=self._HEADERS, params=params, cookies=self.cookie)
         subtitles = response.json()['data']['subtitle']['subtitles']
         if subtitles:
