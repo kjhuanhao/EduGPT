@@ -14,7 +14,6 @@ from pandas import DataFrame
 from typing import Dict
 from prompt.structured_prompt import PLOT_PROMPT
 from pandasai import PandasAI
-from pandasai.llm.openai import OpenAI
 from exceptions.plot_exception import PlotException
 
 
@@ -41,7 +40,7 @@ class ScoreAnalyzer:
         # self._handler = FileCallbackHandler(self._LOGFILE)
         self._llm = Config.stochastic_llm
         self._plot_chain = Config.create_llm_chain(self._llm, PLOT_PROMPT)
-        self._pandas_llm = OpenAI()
+        # self._pandas_llm = OpenAI()
 
     def plot_df(
             self,
@@ -80,10 +79,9 @@ class ScoreAnalyzer:
         :return: 询问结果
         """
         logger.info("正在运行Pandas AI")
-        pandas_ai = PandasAI(self._pandas_llm, conversational=False)
+        pandas_ai = PandasAI(self._llm, conversational=False)
         response = pandas_ai.run(self.df, desc)
 
-        print(response)
         logger.info("成功返回Pandas AI结果")
         return response
 

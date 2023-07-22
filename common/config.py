@@ -17,6 +17,9 @@ load_dotenv(find_dotenv())
 
 
 class Config:
+    proxy = os.getenv("OPENAI_API_PROXY")
+    if proxy is not None:
+        os.environ["OPENAI_API_BASE"] = os.getenv("OPENAI_API_PROXY")
     openai_chat_model = "gpt-3.5-turbo"
     openai_16k_chat_model = "gpt-3.5-turbo-16k"
     _llm = ChatOpenAI
@@ -27,9 +30,7 @@ class Config:
                          callbacks=[StreamingStdOutCallbackHandler()])
     long_llm = _llm(model_name=openai_16k_chat_model, temperature=0)
     SESSDATA = os.getenv("SESSDATA")
-    # @staticmethod
-    # def create_conversation_chain(llm, prompt: BasePromptTemplate) -> ConversationChain:
-    #     return ConversationChain(llm=llm, prompt=prompt, memory=ConversationBufferWindowMemory(k=5))
+
 
     @staticmethod
     def create_llm_chain(llm: BaseLanguageModel, prompt: BasePromptTemplate) -> LLMChain:
