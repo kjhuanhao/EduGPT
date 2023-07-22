@@ -35,7 +35,7 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
             with gr.Column():
                 api_key = gr.Textbox(label="OpenAI API Key")
                 bilibili_SESSDATA = gr.Textbox(label="Bilibili SESSDATA(可选)")
-                proxy_url = gr.Textbox(label="代理地址(可选)", value="https://api.openai-proxy.com/v1")
+                proxy_url = gr.Textbox(label="代理地址(可选)", value="https://chat.8848666.xyz/v1")
 
             with gr.Column():
                 toggle_dark = gr.Checkbox(label="切换主题")
