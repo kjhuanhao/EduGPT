@@ -32,7 +32,7 @@ class QAGenerator:
         self.qa_text = qa_text
         self.seg_length = 3400
         self.query = query
-        self._llm = Config.long_llm
+        self._llm = Config.get_long_llm()
         self._chain = Config.create_llm_chain(self._llm, QA_PROMPT)
 
     def _text_splitter(self) -> List[str]:

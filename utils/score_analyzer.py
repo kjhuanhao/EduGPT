@@ -37,10 +37,8 @@ class ScoreAnalyzer:
         self.file_path = file_path
         self.df = pd.read_csv(file_path)
         self._schema_str = self._get_df_schema(self.df)
-        # self._handler = FileCallbackHandler(self._LOGFILE)
-        self._llm = Config.stochastic_llm
+        self._llm = Config.get_stochastic_llm()
         self._plot_chain = Config.create_llm_chain(self._llm, PLOT_PROMPT)
-        # self._pandas_llm = OpenAI()
 
     def plot_df(
             self,

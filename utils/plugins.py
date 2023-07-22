@@ -25,8 +25,8 @@ class Plugins:
 
     def __init__(self, instruction: str):
         self.instruction = instruction
-        self._deterministic_llm = Config.deterministic_llm
-        self._stochastic_llm = Config.stochastic_llm
+        self._deterministic_llm = Config.get_deterministic_llm()
+        self._stochastic_llm = Config.get_stochastic_llm()
 
     def generate_study_plan(self):
         """

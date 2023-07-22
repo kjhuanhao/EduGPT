@@ -8,10 +8,7 @@ import os
 from typing import Dict
 from utils.cache_handler import CacheHandler
 from entity.toolkit import Toolkit
-from dotenv import load_dotenv, find_dotenv
 import gradio as gr
-
-load_dotenv(find_dotenv())
 
 
 def initialize_state() -> Dict:
@@ -33,8 +30,15 @@ def initialize_state() -> Dict:
     return state
 
 
-def check_settings():
-    api_key = os.getenv("OPENAI_API_KEY")
-    bilibili_SESSDATA = os.getenv("SESSDATA")
-    return [gr.update(value=lambda: api_key is not None),
-            gr.update(value=lambda: bilibili_SESSDATA is not None)]
+def set_env(api_key, bilibili_SESSDATA, proxy_url):
+    """
+    设置环境变量
+    """
+    if not api_key:
+        return gr.update(value="⚠️状态：设置失败，api_key为空")
+
+    os.environ["OPENAI_API_PROXY"] = proxy_url
+    os.environ["OPENAI_API_KEY"] = api_key
+    os.environ["SESSDATA"] = bilibili_SESSDATA
+
+    return gr.update(value="✅状态：设置环境变量成功")

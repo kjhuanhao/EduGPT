@@ -18,7 +18,7 @@ from langchain.prompts import BasePromptTemplate
 class DescriptionGenerator:
     def __init__(self, course_id: str):
         self.course_id = course_id
-        self._llm = Config.stochastic_llm
+        self._llm = Config.get_stochastic_llm()
         self._description_chain = Config.create_llm_chain(self._llm, DESCRIPTION_PROMPT)
         self._cache_handler = CacheHandler()
 
