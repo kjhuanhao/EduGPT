@@ -11,9 +11,6 @@ import os
 from typing import Any, List, Mapping, Optional
 from langchain.callbacks.manager import CallbackManagerForLLMRun
 from langchain.llms.base import LLM
-from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
-from langchain.llms import openai
 
 
 class ErnieBot(LLM):
@@ -58,12 +55,4 @@ class ErnieBot(LLM):
         result = response.json().get("result")
         return result
 
-#
-# prompt = "请你帮我指定一个{subject}科目的学习计划"
-# template = PromptTemplate(input_variables=["subject"], template=prompt)
-# chain = LLMChain(llm=ErnieBot(), prompt=template)
-# print(chain.run(subject="数学"))
 
-# access_token = "24.8d58a0f93757871f2b6eddaabebbe630.2592000.1694010538.282335-37334268"
-# llm = ErnieBot()
-# print(llm("你好"))
