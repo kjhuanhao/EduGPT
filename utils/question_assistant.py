@@ -22,7 +22,7 @@ class QuestionAssistant:
     def __init__(
             self
     ) -> None:
-        self._llm = Config.get_stochastic_llm()
+        self._llm = Config().get_llm()
         self._set_choice_question_chain = Config.create_llm_chain(llm=self._llm, prompt=QUESTION_CHOICE_PROMPT)
         self._set_short_answer_question_chain = Config.create_llm_chain(llm=self._llm,
                                                                         prompt=QUESTION_SHORT_ANSWER_PROMPT)

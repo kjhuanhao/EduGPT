@@ -33,9 +33,10 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
         gr.Markdown("## ❤️感谢你使用本应用，在开始前请确保下面的配置你都进行了设置，可以点击确定按钮，将为你检测配置状态")
         with gr.Row():
             with gr.Column():
-                api_key = gr.Textbox(label="OpenAI API Key")
+                model = gr.Radio(choices=["openai", "ernie"], label="模型选择", value="openai", interactive=True)
+                access_info = gr.Textbox(label="鉴权信息Key or Token")
                 bilibili_SESSDATA = gr.Textbox(label="Bilibili SESSDATA(可选)")
-                proxy_url = gr.Textbox(label="代理地址(可选)", value="https://chat.8848666.xyz/v1")
+                proxy_url = gr.Textbox(label="代理地址(可选)", value="")
 
             with gr.Column():
                 toggle_dark = gr.Checkbox(label="切换主题")
@@ -48,7 +49,8 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
                     }
                     """,
                 )
-        gr.Button("确定").click(fn=set_env, inputs=[api_key, bilibili_SESSDATA, proxy_url], outputs=info)
+        gr.Button("确定").click(fn=set_env, inputs=[model, access_info, bilibili_SESSDATA, proxy_url], outputs=info)
+
         # with gr.Box():
         #     gr.Markdown("- 项目地址: https://github.com/kjhuanhao/EduGPT/tree/dev")
         #     gr.Markdown("- 作者: [LaiJiahao](https://github.com/kjhuanhao)")

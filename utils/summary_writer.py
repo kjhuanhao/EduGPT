@@ -33,7 +33,7 @@ class SummaryWriter:
         self.subtitle = summary_info["subtitle"]
         self.seg_length = 3000
         self.summary_count = 5 if summary_count is None else summary_count
-        self._llm = Config.get_deterministic_llm()
+        self._llm = Config().get_llm()
         self._summary_chain = Config.create_llm_chain(llm=self._llm, prompt=SUMMARY_PROMPT)
         self._cache_handler = CacheHandler()
 

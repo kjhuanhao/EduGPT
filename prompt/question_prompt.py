@@ -20,7 +20,7 @@ QUESTION_CHOICE_TEMPLATE = """
 8. 解析：对刚刚的题目进行解析，对答案进行详细的解释，不超过200字
 9. 将上述信息封装到json中字符串，只返回json格式的文本
 
-以JSON格式提供你的输出，包含以下键：question(题目)，A(A选项), B(B选项) ,C(C选项) ,D(D选项), clue(提示)，answer(答案)，explanation(解析)
+只需以JSON格式提供你的输出，无需返回markdown，包含以下键：question(题目)，A(A选项), B(B选项) ,C(C选项) ,D(D选项), clue(提示)，answer(答案)，explanation(解析)
 
 用户的指令：
 请随机给出一个 {instruction}的题目, 该题目的所属科目是 {subject}
@@ -38,7 +38,7 @@ QUESTION_SHORT_ANSWER_TEMPLATE = """
 5. 解析：对刚刚的题目进行解析，对答案进行详细的解释，不超过300字
 6. 将上述信息封装到json中字符串，只返回json格式的文本
 
-以JSON格式提供你的输出，包含以下键：question(题目)，clue(提示)，answer(答案)，explanation(解析)
+只需以JSON格式提供你的输出，无需返回markdown，包含以下键：question(题目)，clue(提示)，answer(答案)，explanation(解析)
 
 用户的指令：
 请随机给出一个 `{instruction}`的题目, 该题目的所属科目是 `{subject}`
@@ -79,7 +79,7 @@ VIDEO_QUESTION_SHORT_ANSWER_TEMPLATE = """
 5. 解析：对刚刚的题目进行解析，对答案进行详细的解释，不超过300字
 6. 将上述信息封装到json中字符串，只返回json格式的文本
 
-以JSON格式提供你的输出，包含以下键：question(题目)，clue(提示)，answer(答案)，explanation(解析)
+只需以JSON格式提供你的输出，无需返回markdown，包含以下键：question(题目)，clue(提示)，answer(答案)，explanation(解析)
 
 上下文:
 {summary}
@@ -104,7 +104,7 @@ VIDEO_QUESTION_CHOICE_TEMPLATE = """
 8. 解析：对刚刚的题目进行解析，对答案进行详细的解释，不超过200字
 9. 将上述信息封装到json中字符串，只返回json格式的文本
 
-以JSON格式提供你的输出，包含以下键：question(题目)，A(A选项), B(B选项) ,C(C选项) ,D(D选项), clue(提示)，answer(答案)，explanation(解析)
+只需以JSON格式提供你的输出，无需返回markdown，包含以下键：question(题目)，A(A选项), B(B选项) ,C(C选项) ,D(D选项), clue(提示)，answer(答案)，explanation(解析)
 
 上下文:
 {summary}

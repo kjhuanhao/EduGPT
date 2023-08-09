@@ -37,7 +37,7 @@ class ScoreAnalyzer:
         self.file_path = file_path
         self.df = pd.read_csv(file_path)
         self._schema_str = self._get_df_schema(self.df)
-        self._llm = Config.get_stochastic_llm()
+        self._llm = Config().get_llm()
         self._plot_chain = Config.create_llm_chain(self._llm, PLOT_PROMPT)
 
     def plot_df(
@@ -77,6 +77,7 @@ class ScoreAnalyzer:
         :return: 询问结果
         """
         logger.info("正在运行Pandas AI")
+        desc += " 请使用中文回复"
         pandas_ai = PandasAI(self._llm, conversational=False)
         response = pandas_ai.run(self.df, desc)
 

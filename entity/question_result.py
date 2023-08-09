@@ -9,7 +9,7 @@ from typing import Dict
 
 class ChoiceQuestionResult:
     def __init__(self, response: str):
-        structure = dict(eval(response))
+        structure = dict(eval(response.replace("json", "").replace("```", "")))
         self.question = structure["question"]
         self.options = {
             "A": structure["A"],

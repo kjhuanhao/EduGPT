@@ -5,18 +5,19 @@
 # @Desc      : 函数配置文件
 
 import os
+
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import BasePromptTemplate
 from langchain.chains import LLMChain
-from langchain.base_language import BaseLanguageModel
+from common.ernie_bot import ErnieBot
 
 
 def get_openai_proxy():
     return os.getenv("OPENAI_API_PROXY")
 
 
-def get_openai_key():
-    return os.getenv("OPENAI_API_KEY")
+def get_access_info():
+    return os.getenv("ACCESS_INFO")
 
 
 class Config:
@@ -24,26 +25,29 @@ class Config:
     if api_key is None:
         os.environ["OPENAI_API_KEY"] = "sk"
 
-    openai_chat_model = "gpt-3.5-turbo"
-    openai_16k_chat_model = "gpt-3.5-turbo-16k"
+    def get_llm(self):
+        llm = self._get_model()
+        return llm
 
     @staticmethod
     def get_SESSDATA():
         return os.getenv("SESSDATA")
 
     @staticmethod
-    def get_stochastic_llm():
-        print(get_openai_key())
-        return ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.5, openai_api_key=get_openai_key(), openai_api_base=get_openai_proxy())
-
-    @staticmethod
-    def get_deterministic_llm():
-        return ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0, openai_api_key=get_openai_key(), openai_api_base=get_openai_proxy())
-
-    @staticmethod
-    def get_long_llm():
-        return ChatOpenAI(model_name="gpt-3.5-turbo-16k", temperature=0, openai_api_key=get_openai_key(), openai_api_base=get_openai_proxy())
-
-    @staticmethod
-    def create_llm_chain(llm: BaseLanguageModel, prompt: BasePromptTemplate) -> LLMChain:
+    def create_llm_chain(llm, prompt: BasePromptTemplate) -> LLMChain:
         return LLMChain(llm=llm, prompt=prompt)
+
+    @staticmethod
+    def _get_model():
+        model = os.getenv("MODEL")
+        if model is None:
+            raise ValueError("MODEL is not set")
+        if model == "openai":
+            return ChatOpenAI(
+                model_name="gpt-3.5-turbo",
+                temperature=0.5,
+                openai_api_key=get_access_info(),
+                openai_api_base=get_openai_proxy())
+        if model == "ernie":
+            return ErnieBot()
+        print(os.getenv("ACCESS_INFO"))

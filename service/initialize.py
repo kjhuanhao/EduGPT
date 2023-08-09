@@ -30,15 +30,15 @@ def initialize_state() -> Dict:
     return state
 
 
-def set_env(api_key, bilibili_SESSDATA, proxy_url):
+def set_env(model, access_info, bilibili_SESSDATA, proxy_url):
     """
     设置环境变量
     """
-    if not api_key:
-        return gr.update(value="⚠️状态：设置失败，api_key为空")
-
+    if not access_info:
+        return gr.update(value="⚠️状态：设置失败，鉴权信息为空")
+    os.environ["MODEL"] = model
     os.environ["OPENAI_API_PROXY"] = proxy_url
-    os.environ["OPENAI_API_KEY"] = api_key
+    os.environ["ACCESS_INFO"] = access_info
     os.environ["SESSDATA"] = bilibili_SESSDATA
 
     return gr.update(value="✅状态：设置环境变量成功")

@@ -25,8 +25,7 @@ class Plugins:
 
     def __init__(self, instruction: str):
         self.instruction = instruction
-        self._deterministic_llm = Config.get_deterministic_llm()
-        self._stochastic_llm = Config.get_stochastic_llm()
+        self._llm = Config().get_llm()
 
     def generate_study_plan(self):
         """
@@ -35,7 +34,7 @@ class Plugins:
             我在(两)周内。可以每周的(周一周二)每天学习(2)小时 ,我的学习主题是: (中国古代史) , 所属的科目是: (历史)
         """
         logger.info("正在生成学习计划")
-        _llm_chain = Config.create_llm_chain(llm=self._stochastic_llm, prompt=STUDY_PLAN_PROMPT)
+        _llm_chain = Config.create_llm_chain(llm=self._llm, prompt=STUDY_PLAN_PROMPT)
         response = _llm_chain.run(
             instruction=self.instruction
         )
@@ -49,7 +48,7 @@ class Plugins:
             请给我评分，我的作文题目是: (xx)，我的作文内容是: (xx)
         """
         logger.info("正在进行语文作文评分")
-        llm_chain = Config.create_llm_chain(llm=self._stochastic_llm, prompt=CHINESE_ESSAY_SCORING_PROMPT)
+        llm_chain = Config.create_llm_chain(llm=self._llm, prompt=CHINESE_ESSAY_SCORING_PROMPT)
         response = llm_chain.run(
             instruction=self.instruction
         )
@@ -72,7 +71,7 @@ class Plugins:
             result.append(video_infos)
 
         logger.info("AI智能推荐中")
-        llm_chain = Config.create_llm_chain(llm=self._deterministic_llm, prompt=VIDEO_RECOMMENDATION_PROMPT)
+        llm_chain = Config.create_llm_chain(llm=self._llm, prompt=VIDEO_RECOMMENDATION_PROMPT)
         response = llm_chain.run(
             instruction=self.instruction,
             video_info=str(result)
@@ -86,7 +85,7 @@ class Plugins:
             Example:
                 (对话)
         """
-        conversation_chain = Config.create_llm_chain(llm=self._stochastic_llm, prompt=INSPIRATION_PROMPT)
+        conversation_chain = Config.create_llm_chain(llm=self._llm, prompt=INSPIRATION_PROMPT)
         # 如果List有信息，会是[[user,ai]]
         message = "\n"
         if len(chat_history) > 0:
