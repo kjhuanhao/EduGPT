@@ -16,7 +16,7 @@
 ### 我们为什么要做这样一个项目
 起因是报名参加了[百度飞桨的2023大模型应用创新挑战赛](https://aistudio.baidu.com/aistudio/competition/detail/998/0/introduction)
 同时我们也是两名学生，于是敲定主题，做教育相关的AI应用，由于两个人都不是计算机专业的学生，一个会计的一个英专的，所以花费了不少功夫去学习大语言开发，终于在大概两周内
-初步完成了这个项目的demo
+初步完成了这个项目的demo，本项目取得了最佳创意奖的成绩
 
 
 ## 项目展示
@@ -64,6 +64,8 @@ python3 app.py
 - 兼容前端，后端api化，去除gradio
 - 智能网课总结支持自定义上传文件，和实时转录
 - 数字人
+- 增加AI生成PPT的功能
+- ...
 
 ## 参考资料&项目
 - https://github.com/Aomferni/chatTests
